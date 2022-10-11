@@ -2,13 +2,15 @@ grammar MxStar;
 
 program: (globalvariableDefStatement | functionDef | classDef)*;
 
+// construct types
 basicType: Int | Bool | String;
 typeName: basicType | Identifier; //int , string, MyClass
 variableType: typeName ('[' ']')* ;    // int ,bool[][], MyClass[]
 newVar: typeName ('(' ')' | ('[' expression? ']')*) ;  //  int(), MyClass[][1+2][]
 functionType: Void | variableType;
 
-variableDef: variableType variableDeclaration (',' variableDeclaration)*;  // int a; string b,c;
+//
+variableDef: variableType variableDeclaration (',' variableDeclaration)*;  // int a; string[] b,c;
 variableDeclaration: Identifier ('=' expression)?;     // bool v = false, v2;
 
 parameter: variableType Identifier ;
@@ -20,15 +22,16 @@ classDef: Class Identifier '{' (variableDefStatement | functionDef)* classConstr
 
 statementBlock: '{' statement* '}';
 
+// if
 ifStatement: If '(' expression ')' trueStatement=statement (Else falseStatement=statement)? ;
 
+// for while
 forInit: variableDef | expression;
 forCondition: expression;
 stepping: expression;  // for(int i = 1; i <= 10; i++)
 forStatement: For '(' forInit? ';' forCondition? ';' stepping? ')' statement ;
 whileStatement: While '(' expression ')' statement;
 loopStatement: forStatement | whileStatement ;
-
 breakStatement: Break ';';
 continueStatement: Continue ';';
 returnStatement: Return expression? ';';
@@ -56,29 +59,29 @@ atomExpression: This
               | Identifier
               ;
 expressionList:'(' (expression (',' expression)*)? ')';
-expression: expression expressionList
-          | lambdaStatement
-          | expression Dot expression    //   person.name
-          | expression '[' expression ']'    // array[3]
-          | <assoc=right> (SelfPlus | SelfMinus) expression   // ++a
-          | expression (SelfPlus | SelfMinus)  // b++
-          | <assoc=right> (Plus | Minus) expression  //    -19260817
-          | <assoc=right> Tilde expression
-          | <assoc=right> Not expression
-          | <assoc=right> New newVar
-          | expression op = (Multiply | Divide | Mod) expression
-          | expression op = (Plus | Minus) expression
-          | expression op = (LeftShift | RightShift) expression
-          | expression op = (Less | LessEqual | Greater | GreaterEqual) expression
-          | expression op = (Equal | NotEqual) expression
-          | expression op = And expression
-          | expression op = Caret expression
-          | expression op = Or expression
-          | expression op = AND expression
-          | expression op = OR expression
-          | <assoc=right> expression Assign expression
-          | '(' expression ')'
-          | atomExpression
+expression: expression expressionList                                                 #listExpr
+          | lambdaStatement                                                           #lambdaExpr
+          | expression Dot expression                                                 #dotExpr
+          | expression '[' expression ']'                                             #arrayExpr
+          | <assoc=right> (SelfPlus | SelfMinus) expression                           #selfplusExpr
+          | expression (SelfPlus | SelfMinus)                                         #plusselfExpr
+          | <assoc=right> (Plus | Minus) expression                                   #minusExpr
+          | <assoc=right> Tilde expression                                            #tidleExpr
+          | <assoc=right> Not expression                                              #notExpr
+          | <assoc=right> New newVar                                                  #newExpr
+          | expression op = (Multiply | Divide | Mod) expression                      #mutiExpr
+          | expression op = (Plus | Minus) expression                                 #plusminusExpr
+          | expression op = (LeftShift | RightShift) expression                       #listExpr
+          | expression op = (Less | LessEqual | Greater | GreaterEqual) expression    #compareExpr
+          | expression op = (Equal | NotEqual) expression                             #listExpr
+          | expression op = And expression                                            #listExpr
+          | expression op = Caret expression                                          #listExpr
+          | expression op = Or expression                                             #listExpr
+          | expression op = AND expression                                            #listExpr
+          | expression op = OR expression                                             #listExpr
+          | <assoc=right> expression Assign expression                                #assignExpr
+          | '(' expression ')'                                                        #bracketExpr
+          | atomExpression                                                            #atomExpr
           ;
 
 //关键字
