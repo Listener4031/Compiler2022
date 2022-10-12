@@ -9,9 +9,8 @@ variableType: typeName ('[' ']')* ;    // int ,bool[][], MyClass[]
 newVar: typeName ('(' ')' | ('[' expression? ']')*) ;  //  int(), MyClass[][1+2][]
 functionType: Void | variableType;
 
-//
-variableDef: variableType variableDeclaration (',' variableDeclaration)*;  // int a; string[] b,c;
 variableDeclaration: Identifier ('=' expression)?;     // bool v = false, v2;
+variableDef: variableType variableDeclaration (',' variableDeclaration)*;  // int a; string[] b,c;
 
 parameter: variableType Identifier ;
 functionParameterDef: ( parameter (',' parameter)* )?;

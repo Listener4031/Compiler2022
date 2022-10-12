@@ -1,4 +1,4 @@
-// Generated from /Users/weijie/Desktop/Compiler/src/Parser/MxStar.g4 by ANTLR 4.10.1
+// Generated from /Users/weijie/Desktop/Compiler2022/src/Parser/MxStar.g4 by ANTLR 4.10.1
 package Parser;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

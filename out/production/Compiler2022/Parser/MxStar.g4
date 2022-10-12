@@ -9,9 +9,8 @@ variableType: typeName ('[' ']')* ;    // int ,bool[][], MyClass[]
 newVar: typeName ('(' ')' | ('[' expression? ']')*) ;  //  int(), MyClass[][1+2][]
 functionType: Void | variableType;
 
-//
-variableDef: variableType variableDeclaration (',' variableDeclaration)*;  // int a; string[] b,c;
 variableDeclaration: Identifier ('=' expression)?;     // bool v = false, v2;
+variableDef: variableType variableDeclaration (',' variableDeclaration)*;  // int a; string[] b,c;
 
 parameter: variableType Identifier ;
 functionParameterDef: ( parameter (',' parameter)* )?;
@@ -73,12 +72,12 @@ expression: expression expressionList                                           
           | expression op = (Plus | Minus) expression                                 #plusminusExpr
           | expression op = (LeftShift | RightShift) expression                       #listExpr
           | expression op = (Less | LessEqual | Greater | GreaterEqual) expression    #compareExpr
-          | expression op = (Equal | NotEqual) expression                             #listExpr
-          | expression op = And expression                                            #listExpr
-          | expression op = Caret expression                                          #listExpr
-          | expression op = Or expression                                             #listExpr
-          | expression op = AND expression                                            #listExpr
-          | expression op = OR expression                                             #listExpr
+          | expression op = (Equal | NotEqual) expression                             #equalExpr
+          | expression op = And expression                                            #andExpr
+          | expression op = Caret expression                                          #caretExpr
+          | expression op = Or expression                                             #orExpr
+          | expression op = AND expression                                            #andandExpr
+          | expression op = OR expression                                             #ororExpr
           | <assoc=right> expression Assign expression                                #assignExpr
           | '(' expression ')'                                                        #bracketExpr
           | atomExpression                                                            #atomExpr
