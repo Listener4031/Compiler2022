@@ -8,5 +8,6 @@ public class ClassType extends Type{
 
     public ClassType(TYPE t){
         super(t);
+        is_class=true;//now it is a class_type
     }
 }

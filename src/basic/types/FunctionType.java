@@ -10,13 +10,16 @@ public class FunctionType extends Type{
         super(TYPE.FUNCTION);
         name=n;
         return_type=t;
+        is_function=true;
     }
 
     public FunctionType(TYPE x){
         super(x);
+        is_function=true;
     }
 
     public FunctionType(){
         super(TYPE.FUNCTION);
+        is_function=true;
     }
 }
