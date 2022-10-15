@@ -4,41 +4,36 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 public class Locate {
+    public int row,column;
 
-}
-
-/*
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
-public class position {
-    private int row, column ;
-
-    public position (int row, int column) {
-        this.row = row ;
-        this.column = column ;
+    public Locate(int r,int c){
+        row=r;
+        column=c;
     }
 
-    public position(Token token) {
-        this.row = token.getLine();
-        this.column = token.getCharPositionInLine();
+    public int Row(){
+        return row;
     }
 
-    public position(TerminalNode terminal) {
-        this(terminal.getSymbol());
-    }
-
-    public position(ParserRuleContext ctx) {
-        this(ctx.getStart());
-    }
-
-    public int row() { return row; }
-
-    public int col() {
+    public int Column(){
         return column;
     }
 
-    public String toString() { return row + "," + column; }
+    public String ToString(){
+        return row+","+column;
+    }
+
+    public Locate(Token t){
+        row=t.getLine();
+        column=t.getCharPositionInLine();
+    }
+
+    public Locate(TerminalNode t){
+        this(t.getSymbol());
+    }
+
+    public Locate(ParserRuleContext p){
+        this(p.getStart());
+    }
+
 }
- */
