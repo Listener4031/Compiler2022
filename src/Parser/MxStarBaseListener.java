@@ -364,13 +364,13 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAtomExpression(MxStarParser.AtomExpressionContext ctx) { }
+	@Override public void enterAtomExpr(MxStarParser.AtomExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAtomExpression(MxStarParser.AtomExpressionContext ctx) { }
+	@Override public void exitAtomExpr(MxStarParser.AtomExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -388,265 +388,109 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNewExpr(MxStarParser.NewExprContext ctx) { }
+	@Override public void enterBinaryExpression(MxStarParser.BinaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNewExpr(MxStarParser.NewExprContext ctx) { }
+	@Override public void exitBinaryExpression(MxStarParser.BinaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOrorExpr(MxStarParser.OrorExprContext ctx) { }
+	@Override public void enterLambdaExpression(MxStarParser.LambdaExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOrorExpr(MxStarParser.OrorExprContext ctx) { }
+	@Override public void exitLambdaExpression(MxStarParser.LambdaExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDotExpr(MxStarParser.DotExprContext ctx) { }
+	@Override public void enterSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDotExpr(MxStarParser.DotExprContext ctx) { }
+	@Override public void exitSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArrayExpr(MxStarParser.ArrayExprContext ctx) { }
+	@Override public void enterArrayExpression(MxStarParser.ArrayExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArrayExpr(MxStarParser.ArrayExprContext ctx) { }
+	@Override public void exitArrayExpression(MxStarParser.ArrayExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBracketExpr(MxStarParser.BracketExprContext ctx) { }
+	@Override public void enterAtomExpression(MxStarParser.AtomExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBracketExpr(MxStarParser.BracketExprContext ctx) { }
+	@Override public void exitAtomExpression(MxStarParser.AtomExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMutiExpr(MxStarParser.MutiExprContext ctx) { }
+	@Override public void enterPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMutiExpr(MxStarParser.MutiExprContext ctx) { }
+	@Override public void exitPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAtomExpr(MxStarParser.AtomExprContext ctx) { }
+	@Override public void enterFunctionCallExpression(MxStarParser.FunctionCallExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAtomExpr(MxStarParser.AtomExprContext ctx) { }
+	@Override public void exitFunctionCallExpression(MxStarParser.FunctionCallExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOrExpr(MxStarParser.OrExprContext ctx) { }
+	@Override public void enterUnaryExpression(MxStarParser.UnaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOrExpr(MxStarParser.OrExprContext ctx) { }
+	@Override public void exitUnaryExpression(MxStarParser.UnaryExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMinusExpr(MxStarParser.MinusExprContext ctx) { }
+	@Override public void enterBracketExpression(MxStarParser.BracketExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMinusExpr(MxStarParser.MinusExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAndandExpr(MxStarParser.AndandExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAndandExpr(MxStarParser.AndandExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSelfplusExpr(MxStarParser.SelfplusExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSelfplusExpr(MxStarParser.SelfplusExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNotExpr(MxStarParser.NotExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNotExpr(MxStarParser.NotExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPlusselfExpr(MxStarParser.PlusselfExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPlusselfExpr(MxStarParser.PlusselfExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCaretExpr(MxStarParser.CaretExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCaretExpr(MxStarParser.CaretExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLambdaExpr(MxStarParser.LambdaExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLambdaExpr(MxStarParser.LambdaExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterTidleExpr(MxStarParser.TidleExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTidleExpr(MxStarParser.TidleExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterPlusminusExpr(MxStarParser.PlusminusExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPlusminusExpr(MxStarParser.PlusminusExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterListExpr(MxStarParser.ListExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitListExpr(MxStarParser.ListExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAssignExpr(MxStarParser.AssignExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAssignExpr(MxStarParser.AssignExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCompareExpr(MxStarParser.CompareExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCompareExpr(MxStarParser.CompareExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEqualExpr(MxStarParser.EqualExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqualExpr(MxStarParser.EqualExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAndExpr(MxStarParser.AndExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAndExpr(MxStarParser.AndExprContext ctx) { }
+	@Override public void exitBracketExpression(MxStarParser.BracketExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

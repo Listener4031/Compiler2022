@@ -185,11 +185,11 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLambdaStatement(MxStarParser.LambdaStatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MxStarParser#atomExpression}.
+	 * Visit a parse tree produced by {@link MxStarParser#atomExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAtomExpression(MxStarParser.AtomExpressionContext ctx);
+	T visitAtomExpr(MxStarParser.AtomExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MxStarParser#expressionList}.
 	 * @param ctx the parse tree
@@ -197,157 +197,66 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpressionList(MxStarParser.ExpressionListContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code newExpr}
+	 * Visit a parse tree produced by the {@code binaryExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNewExpr(MxStarParser.NewExprContext ctx);
+	T visitBinaryExpression(MxStarParser.BinaryExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code ororExpr}
+	 * Visit a parse tree produced by the {@code lambdaExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOrorExpr(MxStarParser.OrorExprContext ctx);
+	T visitLambdaExpression(MxStarParser.LambdaExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code dotExpr}
+	 * Visit a parse tree produced by the {@code selfplusExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDotExpr(MxStarParser.DotExprContext ctx);
+	T visitSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code arrayExpr}
+	 * Visit a parse tree produced by the {@code arrayExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArrayExpr(MxStarParser.ArrayExprContext ctx);
+	T visitArrayExpression(MxStarParser.ArrayExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code bracketExpr}
+	 * Visit a parse tree produced by the {@code atomExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBracketExpr(MxStarParser.BracketExprContext ctx);
+	T visitAtomExpression(MxStarParser.AtomExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code mutiExpr}
+	 * Visit a parse tree produced by the {@code plusselfExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMutiExpr(MxStarParser.MutiExprContext ctx);
+	T visitPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code atomExpr}
+	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAtomExpr(MxStarParser.AtomExprContext ctx);
+	T visitFunctionCallExpression(MxStarParser.FunctionCallExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code orExpr}
+	 * Visit a parse tree produced by the {@code unaryExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOrExpr(MxStarParser.OrExprContext ctx);
+	T visitUnaryExpression(MxStarParser.UnaryExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code minusExpr}
+	 * Visit a parse tree produced by the {@code bracketExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMinusExpr(MxStarParser.MinusExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code andandExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAndandExpr(MxStarParser.AndandExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code selfplusExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSelfplusExpr(MxStarParser.SelfplusExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNotExpr(MxStarParser.NotExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code plusselfExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPlusselfExpr(MxStarParser.PlusselfExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code caretExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCaretExpr(MxStarParser.CaretExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code lambdaExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLambdaExpr(MxStarParser.LambdaExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code tidleExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTidleExpr(MxStarParser.TidleExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code plusminusExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPlusminusExpr(MxStarParser.PlusminusExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code listExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitListExpr(MxStarParser.ListExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code assignExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssignExpr(MxStarParser.AssignExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code compareExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCompareExpr(MxStarParser.CompareExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code equalExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEqualExpr(MxStarParser.EqualExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code andExpr}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAndExpr(MxStarParser.AndExprContext ctx);
+	T visitBracketExpression(MxStarParser.BracketExpressionContext ctx);
 }

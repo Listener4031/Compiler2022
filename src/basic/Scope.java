@@ -13,8 +13,6 @@ public class Scope {
     public Scope(){
         members=new HashMap<>();
         IDs=new HashMap<>();
-        parent_scope=null;
-        count_member=0;
     }
 
     public Scope(Scope parent){
@@ -24,33 +22,22 @@ public class Scope {
         count_member=0;
     }
 
-    
+    public boolean IsDefined(boolean is_forward,String name){//consider forward reference
+        if(members.containsKey(name)) return true;
+        else if(parent_scope!=null&&is_forward) return parent_scope.IsDefined(true,name);
+        else return false;
+    }
+
+    public void DefineVariable(Locate l,String name,Type t){//try to define a new variable
+        if(members.containsKey(name)) throw new SemanticError(l,"redefined variable "+name);
+        members.put(name,t);
+        IDs.put(name,count_member++);
+    }
+
+    public Type GetType(Locate l,boolean is_forward,String name){
+        if(members.containsKey(name)) return members.get(name);
+        else if(parent_scope!=null&&is_forward) return parent_scope.GetType(l,true,name);
+        else throw new SemanticError(l,"identifier "+name+" not found");
+    }
 
 }
-/*
-
-    public void defineVariable (String name, Type type, position pos) {
-        if (members.containsKey(name)) throw new semanticError("redefined variable " + name, pos) ;
-        members.put(name, type) ;
-        memberID.put (name, curNum ++) ;
-    }
-
-    public boolean containsVariable (String name, boolean lookUpon) {
-        if (members.containsKey(name)) return true ;
-        else if (parentScope != null && lookUpon) return parentScope.containsVariable(name, true) ;
-        else return false ;
-    }
-
-    public Type getType (position pos, String name, boolean lookUpon) {
-        if (members.containsKey(name)) return members.get(name) ;
-        else if (parentScope != null && lookUpon) return parentScope.getType(pos, name, true) ;
-        else throw new semanticError("identifier " + name + " not found", pos);
-    }
-
-    public entity getEntity (String name, boolean lookUpon) {
-        if (entities.containsKey(name)) return entities.get(name) ;
-        else if (parentScope != null && lookUpon) return parentScope.getEntity(name, true) ;
-        return null ;
-    }
-}
- */

@@ -50,37 +50,37 @@ variableDefStatement: variableDef ';';
 
 lambdaStatement: '[&]' '(' functionParameterDef ')' '->' statementBlock expressionList;
 
-atomExpression: This
-              | Null
-              | UnsignedInteger
-              | BoolLiteral
-              | StringObject
-              | Identifier
-              ;
+atomExpr: This
+        | Null
+        | UnsignedInteger
+        | BoolLiteral
+        | StringObject
+        | Identifier
+        ;
 expressionList:'(' (expression (',' expression)*)? ')';
-expression: expression expressionList                                                 #listExpr
-          | lambdaStatement                                                           #lambdaExpr
-          | expression Dot expression                                                 #dotExpr
-          | expression '[' expression ']'                                             #arrayExpr
-          | <assoc=right> (SelfPlus | SelfMinus) expression                           #selfplusExpr
-          | expression (SelfPlus | SelfMinus)                                         #plusselfExpr
-          | <assoc=right> (Plus | Minus) expression                                   #minusExpr
-          | <assoc=right> Tilde expression                                            #tidleExpr
-          | <assoc=right> Not expression                                              #notExpr
-          | <assoc=right> New newVar                                                  #newExpr
-          | expression op = (Multiply | Divide | Mod) expression                      #mutiExpr
-          | expression op = (Plus | Minus) expression                                 #plusminusExpr
-          | expression op = (LeftShift | RightShift) expression                       #listExpr
-          | expression op = (Less | LessEqual | Greater | GreaterEqual) expression    #compareExpr
-          | expression op = (Equal | NotEqual) expression                             #equalExpr
-          | expression op = And expression                                            #andExpr
-          | expression op = Caret expression                                          #caretExpr
-          | expression op = Or expression                                             #orExpr
-          | expression op = AND expression                                            #andandExpr
-          | expression op = OR expression                                             #ororExpr
-          | <assoc=right> expression Assign expression                                #assignExpr
-          | '(' expression ')'                                                        #bracketExpr
-          | atomExpression                                                            #atomExpr
+expression: lambdaStatement                                                           #lambdaExpression
+          | expression expressionList                                                 #functionCallExpression
+          | expression Dot expression                                                 #binaryExpression
+          | expression '[' expression ']'                                             #arrayExpression
+          | <assoc=right> (SelfPlus | SelfMinus) expression                           #selfplusExpression
+          | expression (SelfPlus | SelfMinus)                                         #plusselfExpression
+          | <assoc=right> (Plus | Minus) expression                                   #unaryExpression
+          | <assoc=right> Tilde expression                                            #unaryExpression
+          | <assoc=right> Not expression                                              #unaryExpression
+          | <assoc=right> New newVar                                                  #unaryExpression
+          | expression op = (Multiply | Divide | Mod) expression                      #binaryExpression
+          | expression op = (Plus | Minus) expression                                 #binaryExpression
+          | expression op = (LeftShift | RightShift) expression                       #binaryExpression
+          | expression op = (Less | LessEqual | Greater | GreaterEqual) expression    #binaryExpression
+          | expression op = (Equal | NotEqual) expression                             #binaryExpression
+          | expression op = And expression                                            #binaryExpression
+          | expression op = Caret expression                                          #binaryExpression
+          | expression op = Or expression                                             #binaryExpression
+          | expression op = AND expression                                            #binaryExpression
+          | expression op = OR expression                                             #binaryExpression
+          | <assoc=right> expression Assign expression                                #binaryExpression
+          | '(' expression ')'                                                        #bracketExpression
+          | atomExpr                                                                  #atomExpression
           ;
 
 //关键字

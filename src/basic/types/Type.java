@@ -27,6 +27,4 @@ public class Type {
         is_function=x.is_function;
     }
 
-
-
 }
