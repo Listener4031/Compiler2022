@@ -28,6 +28,18 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDefinition(MxStarParser.DefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDefinition(MxStarParser.DefinitionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBasicType(MxStarParser.BasicTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}

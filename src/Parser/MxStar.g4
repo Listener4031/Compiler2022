@@ -1,6 +1,7 @@
 grammar MxStar;
 
-program: (globalvariableDefStatement | functionDef | classDef)*;
+program: definition*;
+definition: globalvariableDefStatement | functionDef | classDef;
 
 // construct types
 basicType: Int | Bool | String;

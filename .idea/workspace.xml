@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9347c0ff-7e32-4528-a792-2599d8708371" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AST/ASTNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AST/ASTNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AST/ASTVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AST/ASTVisitor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/MxStar.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStar.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/MxStar.interp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStar.interp" afterDir="false" />
@@ -15,8 +14,6 @@
       <change beforePath="$PROJECT_DIR$/src/Parser/MxStarListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/MxStarParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/MxStarVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarVisitor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/basic/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/Scope.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/basic/types/Type.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/types/Type.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/frontend/ASTBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/ASTBuilder.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

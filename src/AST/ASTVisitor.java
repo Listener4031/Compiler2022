@@ -29,4 +29,7 @@ public interface ASTVisitor {
     void visit(PrefixExpressionNode node);
     void visit(PostfixExpressionNode node);
     void visit(UnaryExpressionNode node);
+    void visit(AtomExpressionNode node);
+    void visit(ParameterNode node);
+    void visit(FunctionParameterDefNode node);
 }
