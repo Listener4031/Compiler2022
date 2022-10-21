@@ -20,7 +20,6 @@ public interface ASTVisitor {
     void visit(ClassDefNode node);
     void visit(ClassConstructorNode node);
     void visit(NewVariableNode node);
-    void visit(NewSizeNode node);
     void visit(ExpressionListNode node);
     void visit(ArrayExpressionNode node);
     void visit(BinaryExpressionNode node);
@@ -32,4 +31,8 @@ public interface ASTVisitor {
     void visit(AtomExpressionNode node);
     void visit(ParameterNode node);
     void visit(FunctionParameterDefNode node);
+    void visit(BasicTypeNode node);
+    void visit(FunctionTypeNode node);
+    void visit(VariableTypeNode node);
+    void visit(TypeNameNode node);
 }

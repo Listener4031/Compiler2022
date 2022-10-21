@@ -6,14 +6,12 @@ import basic.types.Type;
 import java.util.ArrayList;
 
 public class NewVariableNode extends ExpressionNode{
-    public String name;
-    public Type type;
-    public ArrayList<NewSizeNode> new_sizes;
+    public TypeNameNode type_;
+    public ArrayList<ExpressionNode> new_sizes;
 
-    public NewVariableNode(Locate l,String s,Type t){
+    public NewVariableNode(Locate l,TypeNameNode t){
         super(l);
-        name=s;
-        type=t;
+        type_=t;
         new_sizes=new ArrayList<>();
     }
 

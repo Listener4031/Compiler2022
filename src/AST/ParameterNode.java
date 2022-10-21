@@ -4,13 +4,13 @@ import basic.Locate;
 import basic.types.Type;
 
 public class ParameterNode extends ASTNode{
-    public String name=null;
-    public Type variable_type=null;
+    public VariableTypeNode type_;
+    public String name;
 
-    public ParameterNode(Locate l,Type t,String s){
+    public ParameterNode(Locate l,VariableTypeNode t,String s){
         super(l);
+        type_=t;
         name=s;
-        variable_type=t;
     }
 
     @Override
