@@ -92,7 +92,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
 
     @Override public ASTNode visitClassConstructor(MxStarParser.ClassConstructorContext ctx) {
         Locate l=new Locate(ctx);
-        return new ClassConstructorNode(l,ctx.Identifier().getText(),(StatementBlockNode) visit(ctx.statementBlock()));
+        return new ClassConstructorNode(l,ctx.Identifier().toString(),(StatementBlockNode) visit(ctx.statementBlock()));
     }
 
     @Override public ASTNode visitClassDef(MxStarParser.ClassDefContext ctx) {
@@ -217,7 +217,12 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
         return visit(ctx.variableDef());
     }
 
-    @Override public ASTNode visitLambdaStatement(MxStarParser.LambdaStatementContext ctx) { return visitChildren(ctx); }
+    @Override public ASTNode visitLambdaStatement(MxStarParser.LambdaStatementContext ctx) {
+        Locate l=new Locate(ctx);
+        FunctionParameterDefNode node=null;
+        if(ctx.functionParameterDef()!=null) node=new FunctionParameterDefNode(l);
+        return new LambdaStatementNode(l,node,(StatementBlockNode) visit(ctx.statementBlock()),(ExpressionListNode) visit(ctx.expressionList()));
+    }
 
     @Override public ASTNode visitAtomExpr(MxStarParser.AtomExprContext ctx) {
         Locate l=new Locate(ctx);
@@ -296,7 +301,9 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
         return new_node;
     }
 
-    @Override public ASTNode visitLambdaExpression(MxStarParser.LambdaExpressionContext ctx) { return visitChildren(ctx); }
+    @Override public ASTNode visitLambdaExpression(MxStarParser.LambdaExpressionContext ctx) {
+        return visit(ctx.lambdaStatement());
+    }
 
     @Override public ASTNode visitSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx) {
         Locate l=new Locate(ctx);

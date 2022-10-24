@@ -24,6 +24,10 @@ public class GlobalScope extends Scope {
     public GlobalScope(Scope s,String id){
         super(s);
         ID=id;
+        ClassScope=new HashMap<>();
+        FunctionParameters=new HashMap<>();
+        FunctionScope=new HashMap<>();
+        FunctionReturnType=new HashMap<>();
     }
 
     public void DefineClass(Locate l,String name,GlobalScope s){

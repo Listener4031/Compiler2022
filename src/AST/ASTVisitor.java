@@ -35,4 +35,5 @@ public interface ASTVisitor {
     void visit(FunctionTypeNode node);
     void visit(VariableTypeNode node);
     void visit(TypeNameNode node);
+    void visit(LambdaStatementNode node);
 }
