@@ -52,7 +52,7 @@ public class SemanticChecker implements ASTVisitor {
             if(_left_value.type_!= Type.TYPE.CLASS||!_left_value.name.equals(_right_value.name)) throw new SemanticError(l,"the value cannot be assigned this");
         }
         else if(_right_value.type_== Type.TYPE.NULL){
-            if(_left_value.dimension>0) return;
+            if(_left_value.dimension>0) return;// OK
             if(_left_value.type_!= Type.TYPE.CLASS&&_left_value.type_!= Type.TYPE.THIS&&_left_value.type_!= Type.TYPE.STRING) throw new SemanticError(l,"the value cannot be assigned null");
         }
         else CheckTypeMatch(l,_left_value,_right_value);
@@ -160,7 +160,7 @@ public class SemanticChecker implements ASTVisitor {
         boolean tmp_switch=is_function_identifier;
         is_function_identifier=false;
         node.index.accept(this);
-        if(return_type.type_!= Type.TYPE.INT||return_type.dimension>=1) throw new SemanticError(node.index.position,"array index should be int");
+        if(return_type.type_!= Type.TYPE.INT||return_type.dimension>0) throw new SemanticError(node.index.position,"array index should be int");
         is_function_identifier=tmp_switch;
         node.index.type=new Type(return_type);
         node.identifier.accept(this);
@@ -203,61 +203,8 @@ public class SemanticChecker implements ASTVisitor {
                 CheckAssignment(node.position,left_type,right_type);
                 return_type.assignable=false;
             }
-            
+
         }
-        /*
-        else {
-                if (leftExpressionType.dim > 0 || leftExpressionType.type == basicType.Class) {
-                    if (it.binaryOp != binaryOperator.Equal && it.binaryOp != binaryOperator.NotEqual)
-                        throw new semanticError("class or array can only compute with == or !=", it.pos) ;
-                    // = or !=
-                    if (rightExpressionType.type != basicType.Null)
-                        typeMatchCheck(it.pos, leftExpressionType, rightExpressionType) ;
-                    returnType = new Type (basicType.Bool, 0, false) ;
-                } else if (rightExpressionType.dim > 0 || rightExpressionType.type == basicType.Class) {
-                    if (it.binaryOp != binaryOperator.Equal && it.binaryOp != binaryOperator.NotEqual)
-                        throw new semanticError("class or array can only compute with == or !=", it.pos) ;
-                    // = or !=
-                    if (leftExpressionType.type != basicType.Null)
-                        typeMatchCheck(it.pos, leftExpressionType, rightExpressionType) ;
-                    returnType = new Type (basicType.Bool, 0, false) ;
-                } else {
-                    if (leftExpressionType.type == basicType.Int) {
-                        typeMatchCheck(it.pos, leftExpressionType, rightExpressionType);
-                        if (isCompareOperator(it.binaryOp)) // return bool
-                            returnType = new Type (basicType.Bool, 0, false) ;
-                        else if (isArithmeticOperator(it.binaryOp)) // return int
-                            returnType = new Type (basicType.Int, 0, false) ;
-                        else
-                            throw new semanticError("wrong operator with int", it.pos) ;
-                    } else if (leftExpressionType.type == basicType.Bool) {
-                        typeMatchCheck(it.pos, leftExpressionType, rightExpressionType);
-                        if (it.binaryOp == binaryOperator.Equal || it.binaryOp == binaryOperator.NotEqual
-                        || it.binaryOp == binaryOperator.AndAnd || it.binaryOp == binaryOperator.OrOr)
-                            returnType = new Type(basicType.Bool, 0, false) ;
-                        else
-                            throw new semanticError("wrong operator with bool", it.pos) ;
-                    } else if (leftExpressionType.type == basicType.String) {
-                        typeMatchCheck(it.pos, leftExpressionType, rightExpressionType);
-                        if (it.binaryOp == binaryOperator.Plus)
-                            returnType = new Type (basicType.String, 0, false) ;
-                        else if (isCompareOperator(it.binaryOp))
-                            returnType = new Type (basicType.Bool, 0, false) ;
-                        else
-                            throw new semanticError("wrong operator with string", it.pos) ;
-                    } else if (leftExpressionType.type == basicType.Null) {
-                        typeMatchCheck(it.pos, leftExpressionType, rightExpressionType) ;
-                        if (it.binaryOp == binaryOperator.Equal || it.binaryOp == binaryOperator.NotEqual)
-                            returnType = new Type (basicType.Bool, 0, false) ;
-                        else
-                            throw new semanticError("wrong operator with null", it.pos) ;
-                    } else {
-                        throw new semanticError("invalid binary expression", it.pos) ;
-                    }
-                }
-            }
-        }
-         */
     }
 
     @Override

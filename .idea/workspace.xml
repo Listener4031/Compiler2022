@@ -5,24 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9347c0ff-7e32-4528-a792-2599d8708371" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/antlr_4_10_1_complete.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Compiler2022.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Compiler2022.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/antlr-4.11.1-complete.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/AST/ASTVisitor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/AST/ASTVisitor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/Parser/MxStarLexer.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/Parser/MxStarLexer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/Parser/MxStarParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/Parser/MxStarParser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/frontend/ASTBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/frontend/ASTBuilder.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SemanticChecker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SemanticChecker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SymbolCollector.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SymbolCollector.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AST/BasicTypeNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AST/BasicTypeNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/basic/types/Type.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/types/Type.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/frontend/ASTBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/ASTBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/frontend/SemanticChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/SemanticChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/frontend/SymbolCollector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/SymbolCollector.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,11 +107,6 @@
           <url>file://$PROJECT_DIR$/src/Main.java</url>
           <line>31</line>
           <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>196</line>
-          <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
