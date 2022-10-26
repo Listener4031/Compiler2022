@@ -1,10 +1,8 @@
 package frontend;
 
 import AST.*;
-import AST.ProgramNode;
-import basic.GlobalScope;
-import basic.Scope;
-import basic.error.SemanticError;
+import basic.*;
+import basic.error.*;
 import basic.types.*;
 
 import java.util.ArrayList;
@@ -30,12 +28,12 @@ public class SymbolCollector implements ASTVisitor {
         });
         node.def_list.forEach(it->{
             if(it instanceof ClassDefNode){
-                node.accept(this);
+                it.accept(this);
             }
         });
         node.def_list.forEach(it->{
             if(it instanceof FunctionDefNode){
-                node.accept(this);
+                it.accept(this);
             }
         });
 
@@ -243,22 +241,25 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(VariableTypeNode node){
-        if(node.type_.is_basic_type){
-            type_=new Type(node.type);
-            type_.assignable=true;
-        }
-        else{
-            if(global_scope.ExistClass(true,node.type_.ID)){
-                type_=new Type(node.type);
-                type_.assignable=true;
-            }
-            else throw new SemanticError(node.position,"class not found");
-        }
+        node.type_.accept(this);
+        type_.dimension=node.dimension;
         node.type=type_;
+        //throw new RuntimeException();
     }
 
     @Override
-    public void visit(TypeNameNode node){}
+    public void visit(TypeNameNode node){
+        if(node.is_basic_type){
+            type_=new Type(node.basic_type.type_);
+        }
+        else{
+            if(!global_scope.ExistClass(true,node.ID)) throw new SemanticError(node.position,"class not found");
+            type_=new Type(Type.TYPE.CLASS);
+            type_.is_class=true;
+            type_.name=node.ID;
+        }
+        node.type=type_;
+    }
 
     @Override
     public void visit(LambdaStatementNode node){}

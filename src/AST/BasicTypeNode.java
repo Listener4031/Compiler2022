@@ -4,7 +4,7 @@ import basic.Locate;
 import basic.types.Type;
 
 public class BasicTypeNode extends ASTNode{
-    public Type.TYPE type_=null;
+    public Type.TYPE type_;
 
     public BasicTypeNode(Locate l,Type.TYPE t){
         super(l);

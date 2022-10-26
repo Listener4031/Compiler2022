@@ -2,7 +2,7 @@ package basic.types;
 
 public class Type {
     public enum TYPE {NULL, INT, BOOL, STRING, CLASS, FUNCTION, VOID, THIS}
-    public TYPE type_=null;
+    public TYPE type_;
     public int dimension=0;
     public String name=null;
     public boolean assignable=true,is_function=false,is_class=false;
