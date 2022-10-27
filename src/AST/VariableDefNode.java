@@ -6,8 +6,8 @@ import basic.types.Type;
 import java.util.ArrayList;
 
 public class VariableDefNode extends ASTNode{
-    public VariableTypeNode type_=null;
-    public ArrayList<VariableDeclarationNode> variable_declarations=null;
+    public VariableTypeNode type_;
+    public ArrayList<VariableDeclarationNode> variable_declarations;
 
     public VariableDefNode(Locate l,VariableTypeNode t){
         super(l);

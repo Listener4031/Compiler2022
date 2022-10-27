@@ -352,17 +352,17 @@ public interface MxStarListener extends ParseTreeListener {
 	 */
 	void exitLambdaExpression(MxStarParser.LambdaExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code selfplusExpression}
+	 * Enter a parse tree produced by the {@code prefixExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx);
+	void enterPrefixExpression(MxStarParser.PrefixExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code selfplusExpression}
+	 * Exit a parse tree produced by the {@code prefixExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx);
+	void exitPrefixExpression(MxStarParser.PrefixExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code arrayExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
@@ -388,17 +388,17 @@ public interface MxStarListener extends ParseTreeListener {
 	 */
 	void exitAtomExpression(MxStarParser.AtomExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code plusselfExpression}
+	 * Enter a parse tree produced by the {@code newExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx);
+	void enterNewExpression(MxStarParser.NewExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code plusselfExpression}
+	 * Exit a parse tree produced by the {@code newExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx);
+	void exitNewExpression(MxStarParser.NewExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
@@ -435,4 +435,16 @@ public interface MxStarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBracketExpression(MxStarParser.BracketExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code postfixExpression}
+	 * labeled alternative in {@link MxStarParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPostfixExpression(MxStarParser.PostfixExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code postfixExpression}
+	 * labeled alternative in {@link MxStarParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPostfixExpression(MxStarParser.PostfixExpressionContext ctx);
 }

@@ -2326,24 +2326,24 @@ public class MxStarParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class SelfplusExpressionContext extends ExpressionContext {
+	public static class PrefixExpressionContext extends ExpressionContext {
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public TerminalNode SelfPlus() { return getToken(MxStarParser.SelfPlus, 0); }
 		public TerminalNode SelfMinus() { return getToken(MxStarParser.SelfMinus, 0); }
-		public SelfplusExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		public PrefixExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).enterSelfplusExpression(this);
+			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).enterPrefixExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).exitSelfplusExpression(this);
+			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).exitPrefixExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxStarVisitor ) return ((MxStarVisitor<? extends T>)visitor).visitSelfplusExpression(this);
+			if ( visitor instanceof MxStarVisitor ) return ((MxStarVisitor<? extends T>)visitor).visitPrefixExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2390,24 +2390,23 @@ public class MxStarParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class PlusselfExpressionContext extends ExpressionContext {
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
+	public static class NewExpressionContext extends ExpressionContext {
+		public TerminalNode New() { return getToken(MxStarParser.New, 0); }
+		public NewVarContext newVar() {
+			return getRuleContext(NewVarContext.class,0);
 		}
-		public TerminalNode SelfPlus() { return getToken(MxStarParser.SelfPlus, 0); }
-		public TerminalNode SelfMinus() { return getToken(MxStarParser.SelfMinus, 0); }
-		public PlusselfExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		public NewExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).enterPlusselfExpression(this);
+			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).enterNewExpression(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).exitPlusselfExpression(this);
+			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).exitNewExpression(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MxStarVisitor ) return ((MxStarVisitor<? extends T>)visitor).visitPlusselfExpression(this);
+			if ( visitor instanceof MxStarVisitor ) return ((MxStarVisitor<? extends T>)visitor).visitNewExpression(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2441,10 +2440,6 @@ public class MxStarParser extends Parser {
 		public TerminalNode Minus() { return getToken(MxStarParser.Minus, 0); }
 		public TerminalNode Tilde() { return getToken(MxStarParser.Tilde, 0); }
 		public TerminalNode Not() { return getToken(MxStarParser.Not, 0); }
-		public TerminalNode New() { return getToken(MxStarParser.New, 0); }
-		public NewVarContext newVar() {
-			return getRuleContext(NewVarContext.class,0);
-		}
 		public UnaryExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -2481,6 +2476,27 @@ public class MxStarParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class PostfixExpressionContext extends ExpressionContext {
+		public ExpressionContext expression() {
+			return getRuleContext(ExpressionContext.class,0);
+		}
+		public TerminalNode SelfPlus() { return getToken(MxStarParser.SelfPlus, 0); }
+		public TerminalNode SelfMinus() { return getToken(MxStarParser.SelfMinus, 0); }
+		public PostfixExpressionContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).enterPostfixExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MxStarListener ) ((MxStarListener)listener).exitPostfixExpression(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof MxStarVisitor ) return ((MxStarVisitor<? extends T>)visitor).visitPostfixExpression(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 
 	public final ExpressionContext expression() throws RecognitionException {
 		return expression(0);
@@ -2514,7 +2530,7 @@ public class MxStarParser extends Parser {
 			case SelfPlus:
 			case SelfMinus:
 				{
-				_localctx = new SelfplusExpressionContext(_localctx);
+				_localctx = new PrefixExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(283);
@@ -2575,7 +2591,7 @@ public class MxStarParser extends Parser {
 				break;
 			case New:
 				{
-				_localctx = new UnaryExpressionContext(_localctx);
+				_localctx = new NewExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(291);
@@ -2841,7 +2857,7 @@ public class MxStarParser extends Parser {
 						break;
 					case 15:
 						{
-						_localctx = new PlusselfExpressionContext(new ExpressionContext(_parentctx, _parentState));
+						_localctx = new PostfixExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(343);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");

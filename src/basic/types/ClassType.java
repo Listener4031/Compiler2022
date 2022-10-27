@@ -7,7 +7,7 @@ public class ClassType extends Type{
     public HashMap<String,FunctionType> functions;
 
     public ClassType(String _name){
-        super(TYPE.CLASS);
+        super(TYPE.CLASS,0,true);
         name=_name;
         is_class=true;//now it is a class_type
         members=new HashMap<>();

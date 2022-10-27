@@ -6,11 +6,26 @@
   <component name="ChangeListManager">
     <list default="true" id="9347c0ff-7e32-4528-a792-2599d8708371" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/Parser/MxStarParser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/Parser/MxStarParser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/frontend/ASTBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/frontend/ASTBuilder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SemanticChecker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SemanticChecker.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AST/FunctionDefNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AST/FunctionDefNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SymbolCollector.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SymbolCollector.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AST/VariableDefNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AST/VariableDefNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/MxStar.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStar.g4" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/MxStarBaseListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarBaseListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/MxStarBaseVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarBaseVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/MxStarListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/MxStarParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/MxStarVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/MxStarVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/basic/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/Scope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/basic/error/Error.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/error/Error.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/basic/types/ClassType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/types/ClassType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/basic/types/FunctionType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/types/FunctionType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/basic/types/Type.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/types/Type.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/ASTBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/ASTBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/frontend/SemanticChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/SemanticChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/frontend/SymbolCollector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/SymbolCollector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.mx" beforeDir="false" afterPath="$PROJECT_DIR$/test.mx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,11 +89,6 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>32</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main.java</url>
           <line>33</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
@@ -94,33 +104,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>38</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>29</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>30</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main.java</url>
           <line>31</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>296</line>
-          <option name="timeStamp" value="50" />
+          <line>22</line>
+          <option name="timeStamp" value="91" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>299</line>
-          <option name="timeStamp" value="51" />
+          <line>23</line>
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
+          <line>26</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
+          <line>38</line>
+          <option name="timeStamp" value="96" />
         </line-breakpoint>
         <breakpoint type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />

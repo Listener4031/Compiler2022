@@ -424,13 +424,13 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx) { }
+	@Override public void enterPrefixExpression(MxStarParser.PrefixExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx) { }
+	@Override public void exitPrefixExpression(MxStarParser.PrefixExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -460,13 +460,13 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx) { }
+	@Override public void enterNewExpression(MxStarParser.NewExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx) { }
+	@Override public void exitNewExpression(MxStarParser.NewExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -503,6 +503,18 @@ public class MxStarBaseListener implements MxStarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBracketExpression(MxStarParser.BracketExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPostfixExpression(MxStarParser.PostfixExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPostfixExpression(MxStarParser.PostfixExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

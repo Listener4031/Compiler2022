@@ -15,10 +15,10 @@ public class Scope {
         IDs=new HashMap<>();
     }
 
-    public Scope(Scope parent){
+    public Scope(Scope _parent){
         members=new HashMap<>();
         IDs=new HashMap<>();
-        parent_scope=parent;
+        parent_scope=_parent;
         count_member=0;
     }
 

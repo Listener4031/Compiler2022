@@ -4,6 +4,7 @@ import AST.*;
 import Parser.MxStarBaseVisitor;
 import Parser.MxStarParser;
 import basic.Locate;
+import basic.error.SemanticError;
 import basic.types.FunctionType;
 import basic.types.Type;
 
@@ -192,6 +193,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
         Locate l=new Locate(ctx);
         StatementNode new_node=new StatementNode(l);
         if(ctx.statementBlock()!=null) new_node.statement_block=(StatementBlockNode) visit(ctx.statementBlock());
+        if(ctx.variableDefStatement()!=null) new_node.variable_def=(VariableDefNode) visit(ctx.variableDefStatement());
         if(ctx.ifStatement()!=null) new_node.if_statement=(IfStatementNode) visit(ctx.ifStatement());
         if(ctx.loopStatement()!=null) new_node.loop_statement=(LoopStatementNode) visit(ctx.loopStatement());
         if(ctx.controlStatement()!=null) new_node.control_statement=(ControlStatementNode) visit(ctx.controlStatement());
@@ -306,11 +308,11 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
         return visit(ctx.lambdaStatement());
     }
 
-    @Override public ASTNode visitSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx) {
+    @Override public ASTNode visitPrefixExpression(MxStarParser.PrefixExpressionContext ctx) {
         Locate l=new Locate(ctx);
-        PostfixExpressionNode new_node=new PostfixExpressionNode(l,null,(ExpressionNode) visit(ctx.expression()));
-        if(ctx.SelfPlus()!=null) new_node.postfix_op= PostfixExpressionNode.POSTFIX_OP.SELF_PLUS;
-        else new_node.postfix_op= PostfixExpressionNode.POSTFIX_OP.SELF_MINUS;
+        PrefixExpressionNode new_node=new PrefixExpressionNode(l,null,(ExpressionNode) visit(ctx.expression()));
+        if(ctx.SelfPlus()!=null) new_node.prefix_op= PrefixExpressionNode.PREFIX_OP.SELF_PLUS;
+        else new_node.prefix_op= PrefixExpressionNode.PREFIX_OP.SELF_MINUS;
         return new_node;
     }
 
@@ -325,11 +327,15 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
         //return visitChildren(ctx);
     }
 
-    @Override public ASTNode visitPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx) {
+    @Override public ASTNode visitNewExpression(MxStarParser.NewExpressionContext ctx) {
+        return visit(ctx.newVar());
+    }
+
+    @Override public ASTNode visitPostfixExpression(MxStarParser.PostfixExpressionContext ctx) {
         Locate l=new Locate(ctx);
-        PrefixExpressionNode new_node=new PrefixExpressionNode(l,null,(ExpressionNode) visit(ctx.expression()));
-        if(ctx.SelfPlus()!=null) new_node.prefix_op= PrefixExpressionNode.PREFIX_OP.SELF_PLUS;
-        else new_node.prefix_op= PrefixExpressionNode.PREFIX_OP.SELF_MINUS;
+        PostfixExpressionNode new_node=new PostfixExpressionNode(l,null,(ExpressionNode) visit(ctx.expression()));
+        if(ctx.SelfPlus()!=null) new_node.postfix_op= PostfixExpressionNode.POSTFIX_OP.SELF_PLUS;
+        else new_node.postfix_op= PostfixExpressionNode.POSTFIX_OP.SELF_MINUS;
         return new_node;
     }
 

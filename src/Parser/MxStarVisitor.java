@@ -217,12 +217,12 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLambdaExpression(MxStarParser.LambdaExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code selfplusExpression}
+	 * Visit a parse tree produced by the {@code prefixExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSelfplusExpression(MxStarParser.SelfplusExpressionContext ctx);
+	T visitPrefixExpression(MxStarParser.PrefixExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code arrayExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
@@ -238,12 +238,12 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAtomExpression(MxStarParser.AtomExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code plusselfExpression}
+	 * Visit a parse tree produced by the {@code newExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPlusselfExpression(MxStarParser.PlusselfExpressionContext ctx);
+	T visitNewExpression(MxStarParser.NewExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
@@ -265,4 +265,11 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBracketExpression(MxStarParser.BracketExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code postfixExpression}
+	 * labeled alternative in {@link MxStarParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPostfixExpression(MxStarParser.PostfixExpressionContext ctx);
 }

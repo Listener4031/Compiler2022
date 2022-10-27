@@ -11,7 +11,7 @@ public abstract class Error extends RuntimeException{
         error_message=s;
     }
 
-    public String ToString(){
+    public String toString(){
         return error_message+": "+position.ToString();
     }
 

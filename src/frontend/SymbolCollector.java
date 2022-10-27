@@ -39,70 +39,59 @@ public class SymbolCollector implements ASTVisitor {
 
         //void print(string str); --function
         ArrayList<Type> parameters_=new ArrayList<>();
-        Type t=new Type(Type.TYPE.STRING);//参数类型
+        Type t=new Type(Type.TYPE.STRING,0,true);//参数类型
         parameters_.add(t);
-        t=new Type(Type.TYPE.VOID);
-        t.assignable=false;//return_type
-        FunctionType tt=new FunctionType("print",t);
-        global_scope.DefineFunction(node.position,"print",new Scope(),tt,parameters_);
+        t=new Type(Type.TYPE.VOID,0,false);
+        global_scope.DefineFunction(node.position,"print",new Scope(),t,parameters_);
         //void println(string str);
-        tt=new FunctionType("println",t);
-        global_scope.DefineFunction(node.position,"println",new Scope(),tt,parameters_);
+        global_scope.DefineFunction(node.position,"println",new Scope(),t,parameters_);
         //void printInt(int n);
-        t=new Type(Type.TYPE.INT);
+        t=new Type(Type.TYPE.INT,0,true);
         parameters_=new ArrayList<>();
         parameters_.add(t);
-        t=new Type(Type.TYPE.VOID);
-        t.assignable=false;
-        tt=new FunctionType("printInt",t);
-        global_scope.DefineFunction(node.position,"printInt",new Scope(),tt,parameters_);
+        t=new Type(Type.TYPE.VOID,0,false);
+        global_scope.DefineFunction(node.position,"printInt",new Scope(),t,parameters_);
         //void printlnInt(int n);
-        tt=new FunctionType("printlnInt",t);
-        global_scope.DefineFunction(node.position,"printlnInt",new Scope(),tt,parameters_);
+        global_scope.DefineFunction(node.position,"printlnInt",new Scope(),t,parameters_);
         //string getString();
-        t=new Type(Type.TYPE.STRING);
-        tt=new FunctionType("getString",t);
-        global_scope.DefineFunction(node.position,"getString",new Scope(),tt,new ArrayList<>());
+        t=new Type(Type.TYPE.STRING,0,false);
+        global_scope.DefineFunction(node.position,"getString",new Scope(),t,new ArrayList<>());
         //int getInt();
-        t=new Type(Type.TYPE.INT);
-        tt=new FunctionType("getInt",t);
-        global_scope.DefineFunction(node.position,"getInt",new Scope(),tt,new ArrayList<>());
+        t=new Type(Type.TYPE.INT,0,false);
+        global_scope.DefineFunction(node.position,"getInt",new Scope(),t,new ArrayList<>());
         //string toString(int i);
+        t.assignable=true;
         parameters_=new ArrayList<>();
         parameters_.add(t);
-        t=new Type(Type.TYPE.STRING);
-        tt=new FunctionType("toString",t);
-        global_scope.DefineFunction(node.position,"toString",new Scope(),tt,parameters_);
+        t=new Type(Type.TYPE.STRING,0,false);
+        global_scope.DefineFunction(node.position,"toString",new Scope(),t,parameters_);
         //_array
         GlobalScope new_global_scope=new GlobalScope(scope,"_array");
         ((GlobalScope)scope).DefineClass(node.position,"_array",new_global_scope);
         //array.size()
-        t=new Type(Type.TYPE.INT);
-        tt=new FunctionType("size",t);
-        new_global_scope.DefineFunction(node.position,"size",new Scope(),tt,new ArrayList<>());
+        t=new Type(Type.TYPE.INT,0,false);
+        new_global_scope.DefineFunction(node.position,"size",new Scope(),t,new ArrayList<>());
         //string
         new_global_scope=new GlobalScope(scope,"string");
         ((GlobalScope)scope).DefineClass(node.position,"string",new_global_scope);
         //int str.length();
-        tt=new FunctionType("length",t);
-        new_global_scope.DefineFunction(node.position,"length",new Scope(),tt,new ArrayList<>());
+        new_global_scope.DefineFunction(node.position,"length",new Scope(),t,new ArrayList<>());
         //string str.substring(int left,int right);
-        t=new Type(Type.TYPE.INT);
+        t=new Type(Type.TYPE.INT,0,true);
         parameters_=new ArrayList<>();
         parameters_.add(t);
         parameters_.add(t);
-        t=new Type(Type.TYPE.STRING);
-        tt=new FunctionType("substring",t);
-        new_global_scope.DefineFunction(node.position,"substring",new Scope(),tt,parameters_);
+        t=new Type(Type.TYPE.STRING,0,false);
+        new_global_scope.DefineFunction(node.position,"substring",new Scope(),t,parameters_);
         //int str.parseInt();
-        t=new Type(Type.TYPE.INT);
-        tt=new FunctionType("parseInt",t);
-        new_global_scope.DefineFunction(node.position,"parseInt",new Scope(),tt,new ArrayList<>());
+        t=new Type(Type.TYPE.INT,0,false);
+        new_global_scope.DefineFunction(node.position,"parseInt",new Scope(),t,new ArrayList<>());
         //int str.ord(int pos);
+        t.assignable=true;
         parameters_=new ArrayList<>();
         parameters_.add(t);
-        tt=new FunctionType("ord",t);
-        new_global_scope.DefineFunction(node.position,"ord",new Scope(),tt,parameters_);
+        t.assignable=false;
+        new_global_scope.DefineFunction(node.position,"ord",new Scope(),t,parameters_);
     }
 
     @Override
@@ -111,10 +100,7 @@ public class SymbolCollector implements ASTVisitor {
     @Override
     public void visit(FunctionDefNode node){
         Type return_type=null;
-        if(node.return_type.is_void){
-            return_type=new Type(Type.TYPE.VOID);
-            return_type.assignable=false;
-        }
+        if(node.return_type.is_void) return_type=new Type(Type.TYPE.VOID,0,false);
         else{
             node.return_type.variable_type.accept(this);
             return_type=type_;
@@ -138,11 +124,9 @@ public class SymbolCollector implements ASTVisitor {
         Type variable_type=type_;
         node.variable_declarations.forEach(it->{
             if(global_scope.ExistClass(true,it.name)){
-                throw new SemanticError(node.position,"variable has the same name with a class");
+                throw new SemanticError(it.position,"variable has the same name with a class");
             }
-            else{
-                scope.DefineVariable(node.position,it.name,variable_type);
-            }
+            else scope.DefineVariable(it.position,it.name,variable_type);
         });
         node.type=variable_type;
     }
@@ -234,7 +218,8 @@ public class SymbolCollector implements ASTVisitor {
     }
 
     @Override
-    public void visit(BasicTypeNode node){}
+    public void visit(BasicTypeNode node){
+    }
 
     @Override
     public void visit(FunctionTypeNode node){}
@@ -249,14 +234,10 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(TypeNameNode node){
-        if(node.is_basic_type){
-            type_=new Type(node.basic_type.type_);
-        }
+        if(node.is_basic_type) type_=new Type(node.basic_type.type_,0,true);
         else{
             if(!global_scope.ExistClass(true,node.ID)) throw new SemanticError(node.position,"class not found");
-            type_=new Type(Type.TYPE.CLASS);
-            type_.is_class=true;
-            type_.name=node.ID;
+            type_=new Type(node.ID,0,true);
         }
         node.type=type_;
     }

@@ -63,12 +63,12 @@ expression: lambdaStatement                                                     
           | expression expressionList                                                 #functionCallExpression
           | expression Dot expression                                                 #binaryExpression
           | expression '[' expression ']'                                             #arrayExpression
-          | <assoc=right> (SelfPlus | SelfMinus) expression                           #selfplusExpression
-          | expression (SelfPlus | SelfMinus)                                         #plusselfExpression
+          | <assoc=right> (SelfPlus | SelfMinus) expression                           #prefixExpression
+          | expression (SelfPlus | SelfMinus)                                         #postfixExpression
           | <assoc=right> (Plus | Minus) expression                                   #unaryExpression
           | <assoc=right> Tilde expression                                            #unaryExpression
           | <assoc=right> Not expression                                              #unaryExpression
-          | <assoc=right> New newVar                                                  #unaryExpression
+          | <assoc=right> New newVar                                                  #newExpression
           | expression op = (Multiply | Divide | Mod) expression                      #binaryExpression
           | expression op = (Plus | Minus) expression                                 #binaryExpression
           | expression op = (LeftShift | RightShift) expression                       #binaryExpression
