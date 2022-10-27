@@ -13,11 +13,6 @@ public class FunctionType extends Type{
         is_function=true;
     }
 
-    public FunctionType(TYPE x){
-        super(x);
-        is_function=true;
-    }
-
     public FunctionType(){
         super(TYPE.FUNCTION);
         is_function=true;

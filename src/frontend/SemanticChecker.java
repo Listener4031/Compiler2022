@@ -3,6 +3,8 @@ package frontend;
 import AST.*;
 import basic.*;
 import basic.error.SemanticError;
+import basic.types.ClassType;
+import basic.types.FunctionType;
 import basic.types.Type;
 
 import java.util.ArrayList;
@@ -10,33 +12,12 @@ import java.util.ArrayList;
 public class SemanticChecker implements ASTVisitor {
     public GlobalScope global_scope;
     public Scope scope;
-    public Type return_type;
-    public boolean is_function_identifier=false;
+    public Type current_type;
+    public Type lambda_return_type=null;
+    public boolean is_function_identifier;
     public int count_in_loop=0;
     public String name_;
     public boolean is_returned=false;
-
-    public boolean IsCompareOperator(BinaryExpressionNode.BINARY_OP op){
-        return op== BinaryExpressionNode.BINARY_OP.LESS
-                ||op== BinaryExpressionNode.BINARY_OP.LESS_EQUAL
-                ||op== BinaryExpressionNode.BINARY_OP.GREATER
-                ||op== BinaryExpressionNode.BINARY_OP.GREATER_EQUAL
-                ||op== BinaryExpressionNode.BINARY_OP.EQUAL
-                ||op== BinaryExpressionNode.BINARY_OP.NOT_EQUAL;
-    }
-
-    public boolean IsArithmeticOperator(BinaryExpressionNode.BINARY_OP op){
-        return op== BinaryExpressionNode.BINARY_OP.MULTIPLY
-                ||op== BinaryExpressionNode.BINARY_OP.DIVIDE
-                ||op== BinaryExpressionNode.BINARY_OP.MOD
-                ||op== BinaryExpressionNode.BINARY_OP.PLUS
-                ||op== BinaryExpressionNode.BINARY_OP.MINUS
-                ||op== BinaryExpressionNode.BINARY_OP.LEFT_SHIFT
-                ||op== BinaryExpressionNode.BINARY_OP.RIGHT_SHIFT
-                ||op== BinaryExpressionNode.BINARY_OP.AND
-                ||op== BinaryExpressionNode.BINARY_OP.OR
-                ||op== BinaryExpressionNode.BINARY_OP.CARET;
-    }
 
     public void CheckTypeMatch(Locate l,Type _left_value,Type _right_value){
         if(_right_value.type_!=_left_value.type_) throw new SemanticError(l,"types mismatch");
@@ -49,7 +30,7 @@ public class SemanticChecker implements ASTVisitor {
     public void CheckAssignment(Locate l,Type _left_value,Type _right_value){
         if(!_left_value.assignable) throw new SemanticError(l,"the value is not assignable");
         if(_right_value.type_== Type.TYPE.THIS){
-            if(_left_value.type_!= Type.TYPE.CLASS||!_left_value.name.equals(_right_value.name)) throw new SemanticError(l,"the value cannot be assigned this");
+            if(_left_value.type_!= Type.TYPE.CLASS||!_left_value.name.equals(global_scope.ID)) throw new SemanticError(l,"the value cannot be assigned this");
         }
         else if(_right_value.type_== Type.TYPE.NULL){
             if(_left_value.dimension>0) return;// OK
@@ -85,8 +66,8 @@ public class SemanticChecker implements ASTVisitor {
         name_=node.name;
         node.statement_block.accept(this);
         if(!name_.equals("main")){
-            return_type=global_scope.GetFunctionReturnType(node.position,node.name);
-            if(return_type.type_!= Type.TYPE.VOID&&!is_returned) throw new SemanticError(node.position,"non-void function should not return nothing");
+            current_type=global_scope.GetFunctionReturnType(node.position,node.name);
+            if(current_type.type_!= Type.TYPE.VOID&&!is_returned) throw new SemanticError(node.position,"non-void function should not return nothing");
         }
         scope=scope.parent_scope;
     }
@@ -111,62 +92,179 @@ public class SemanticChecker implements ASTVisitor {
     }
 
     @Override
-    public void visit(VariableDefNode node){}
+    public void visit(VariableDefNode node){
+        node.type_.accept(this);
+        node.type=new Type(current_type);
+        Type tmp_type=current_type;
+        node.variable_declarations.forEach(it->{
+            if(global_scope.ExistClass(true,it.name)) throw new SemanticError(it.position,"variable name duplicates with class");
+            if(it.initialized){
+                it.expression.accept(this);
+                CheckAssignment(it.position,tmp_type,current_type);
+            }
+            scope.DefineVariable(it.position,it.name,tmp_type);
+        });
+    }
 
     @Override
     public void visit(VariableDeclarationNode node){}
 
     @Override
-    public void visit(IfStatementNode node){}
+    public void visit(IfStatementNode node){
+        node.expression.accept(this);
+        node.expression.type=new Type(current_type);
+        if(current_type.type_!= Type.TYPE.BOOL||current_type.dimension>0) throw new SemanticError(node.position,"the type should be bool");
+        scope=new Scope(scope);
+        node.true_statement.accept(this);
+        scope=scope.parent_scope;
+        if(node.false_statement!=null){
+            scope=new Scope(scope);
+            node.false_statement.accept(this);
+            scope=scope.parent_scope;
+        }
+    }
 
     @Override
-    public void visit(ForStatementNode node){}
+    public void visit(ForStatementNode node){
+        count_in_loop++;
+        scope=new Scope(scope);
+        if(node.init_statement!=null) node.init_statement.accept(this);
+        if(node.for_condition!=null) node.for_condition.accept(this);
+        if(node.step_statement!=null) node.step_statement.accept(this);
+        node.statement.accept(this);
+        scope=scope.parent_scope;
+        count_in_loop--;
+    }
 
     @Override
-    public void visit(ForInitNode node){}
+    public void visit(ForInitNode node){
+        if(node.variable_def!=null) node.variable_def.accept(this);
+        if(node.init_expression!=null){
+            node.init_expression.accept(this);
+            node.init_expression.type=new Type(current_type);
+        }
+    }
 
     @Override
-    public void visit(ForConditionNode node){}
+    public void visit(ForConditionNode node){
+        node.condition.accept(this);
+        node.condition.type=new Type(current_type);
+        if(node.condition.type.type_!= Type.TYPE.BOOL||node.condition.type.dimension>0) throw new SemanticError(node.position,"type of condition should be bool");
+    }
 
     @Override
-    public void visit(SteppingNode node){}
+    public void visit(SteppingNode node){
+        node.stepping.accept(this);
+    }
 
     @Override
-    public void visit(WhileStatementNode node){}
+    public void visit(WhileStatementNode node){
+        node.condition.accept(this);
+        if(current_type.type_!= Type.TYPE.BOOL||current_type.dimension>0) throw new SemanticError(node.position,"condition expression type should be bool");
+        count_in_loop++;
+        scope=new Scope(scope);
+        node.statement.accept(this);
+        scope=scope.parent_scope;
+        count_in_loop--;
+    }
 
     @Override
-    public void visit(BreakStatementNode node){}
+    public void visit(BreakStatementNode node){
+        if(count_in_loop<=0) throw new SemanticError(node.position,"no loop to break");
+    }
 
     @Override
-    public void visit(ContinueStatementNode node){}
+    public void visit(ContinueStatementNode node){
+        if(count_in_loop<=0) throw new SemanticError(node.position,"no loop to continue");
+    }
 
     @Override
-    public void visit(ReturnStatementNode node){}
+    public void visit(ReturnStatementNode node){
+        if(node.expression==null){
+            current_type=new Type(Type.TYPE.VOID);
+            current_type.assignable=false;
+        }
+        else node.expression.accept(this);
+        Type return_type_;
+        if(name_.equals(new String("_lambda"))){
+            if(lambda_return_type==null) lambda_return_type=new Type(current_type);
+            return_type_=lambda_return_type;
+        }
+        else return_type_=global_scope.GetFunctionReturnType(node.position,name_);
+        if(return_type_.type_== Type.TYPE.VOID){
+            if(current_type.type_!= Type.TYPE.VOID) throw new SemanticError(node.position,"non-void function should not return nothing");
+        }
+        else CheckAssignment(node.position,return_type_,current_type);
+        is_returned=true;
+    }
 
     @Override
-    public void visit(ClassDefNode node){}
+    public void visit(ClassDefNode node){
+        scope=((GlobalScope) scope).GetClassScope(node.position,node.name);
+        global_scope=(GlobalScope) scope;
+        if(node.constructor!=null){
+            if(node.constructor.name.equals(node.name)) node.constructor.accept(this);
+            else throw new SemanticError(node.position,"constructor error");
+        }
+        node.functions.forEach(it->{
+            if(it.name.equals(node.name)) throw new SemanticError(node.position,"function name duplicates with class name");
+            it.accept(this);
+        });
+        global_scope=(GlobalScope) global_scope.parent_scope;
+        scope=scope.parent_scope;
+    }
 
     @Override
-    public void visit(ClassConstructorNode node){}
+    public void visit(ClassConstructorNode node){
+        scope=new Scope(scope);
+        Type t=new Type(Type.TYPE.CLASS);
+        t.assignable=false;
+        t.is_class=true;
+        t.name=node.name;
+        global_scope.DefineFunction(node.position,node.name,scope,t,new ArrayList<>());
+        name_=node.name;
+        is_returned=false;
+        count_in_loop=0;
+        node.statement_block.accept(this);
+        scope=scope.parent_scope;
+    }
 
     @Override
-    public void visit(NewVariableNode node){}
+    public void visit(NewVariableNode node){
+        Type tmp_type;
+        if(node.type_.is_basic_type) tmp_type=new Type(node.type_.type);
+        else{
+            tmp_type=new Type(Type.TYPE.CLASS);
+            tmp_type.name=node.type_.ID;
+            tmp_type.is_class=true;
+        }
+        tmp_type.dimension=node.new_sizes.size();
+        node.new_sizes.forEach(it->{
+            if(it==null) throw new SemanticError(node.position,"type of index should be int");
+            it.accept(this);
+            if(current_type.type_!= Type.TYPE.INT||current_type.dimension>0) throw new SemanticError(node.position,"type of index should be int");
+        });
+        current_type=tmp_type;
+        node.type=new Type(current_type);
+    }
 
     @Override
-    public void visit(ExpressionListNode node){}
+    public void visit(ExpressionListNode node){
+        node.expressions.forEach(it->it.accept(this));
+    }
 
     @Override
     public void visit(ArrayExpressionNode node){
         boolean tmp_switch=is_function_identifier;
         is_function_identifier=false;
         node.index.accept(this);
-        if(return_type.type_!= Type.TYPE.INT||return_type.dimension>0) throw new SemanticError(node.index.position,"array index should be int");
+        if(current_type.type_!= Type.TYPE.INT||current_type.dimension>0) throw new SemanticError(node.index.position,"array index should be int");
         is_function_identifier=tmp_switch;
-        node.index.type=new Type(return_type);
+        node.index.type=new Type(current_type);
         node.identifier.accept(this);
-        if(return_type.dimension<=0) throw new SemanticError(node.position,"dimension error");
-        return_type.dimension--;
-        node.type=new Type(return_type);
+        if(current_type.dimension<=0) throw new SemanticError(node.position,"dimension error");
+        current_type.dimension--;
+        node.type=new Type(current_type);
     }
 
     @Override
@@ -175,10 +273,10 @@ public class SemanticChecker implements ASTVisitor {
             boolean tmp_switch=is_function_identifier;
             is_function_identifier=false;
             node.left_expression.accept(this);
-            node.left_expression.type=new Type(return_type);
+            node.left_expression.type=new Type(current_type);
             is_function_identifier=tmp_switch;
             GlobalScope tmp_global_scope=global_scope;
-            Type left_type=return_type;
+            Type left_type=current_type;
             if(left_type.dimension>=1) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,"_array");
             else if(left_type.type_== Type.TYPE.STRING) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,"string");
             else if(left_type.type_== Type.TYPE.CLASS) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,left_type.name);
@@ -186,7 +284,7 @@ public class SemanticChecker implements ASTVisitor {
                 Scope tmp_scope=scope;
                 scope=global_scope;
                 node.right_expression.accept(this);
-                node.right_expression.type=new Type(return_type);
+                node.right_expression.type=new Type(current_type);
                 global_scope=tmp_global_scope;
                 scope=tmp_scope;
             }
@@ -194,36 +292,174 @@ public class SemanticChecker implements ASTVisitor {
         }
         else{
             node.left_expression.accept(this);
-            node.left_expression.type=new Type(return_type);
-            Type left_type=return_type;
+            node.left_expression.type=new Type(current_type);
+            Type left_type=current_type;
             node.right_expression.accept(this);
-            node.right_expression.type=new Type(return_type);
-            Type right_type=return_type;
-            if(node.binary_op== BinaryExpressionNode.BINARY_OP.ASSIGN){
+            node.right_expression.type=new Type(current_type);
+            Type right_type=current_type;
+            if(node.binary_op==BinaryExpressionNode.BINARY_OP.ASSIGN){
                 CheckAssignment(node.position,left_type,right_type);
-                return_type.assignable=false;
+                current_type.assignable=false;
             }
+            else if(node.binary_op== BinaryExpressionNode.BINARY_OP.MULTIPLY
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.DIVIDE
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.MOD){
+                if(left_type.type_!= Type.TYPE.INT
+                        ||left_type.dimension>0
+                        ||right_type.dimension>0
+                        ||right_type.type_!= Type.TYPE.INT) throw new SemanticError(node.position,"binary operator error");
+                current_type=new Type(Type.TYPE.INT);
+                current_type.assignable=false;
+            }
+            else if(node.binary_op== BinaryExpressionNode.BINARY_OP.PLUS
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.MINUS){
+                if(left_type.type_!= Type.TYPE.INT
+                        ||left_type.dimension>0
+                        ||right_type.dimension>0
+                        ||right_type.type_!= Type.TYPE.INT) throw new SemanticError(node.position,"binary operator error");
+                current_type=new Type(Type.TYPE.INT);
+                current_type.assignable=false;
+            }
+            else if(node.binary_op== BinaryExpressionNode.BINARY_OP.LEFT_SHIFT
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.RIGHT_SHIFT){
+                if(left_type.type_!= Type.TYPE.INT
+                        ||left_type.dimension>0
+                        ||right_type.dimension>0
+                        ||right_type.type_!= Type.TYPE.INT) throw new SemanticError(node.position,"binary operator error");
+                current_type=new Type(Type.TYPE.INT);
+                current_type.assignable=false;
+            }
+            else if(node.binary_op== BinaryExpressionNode.BINARY_OP.LESS
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.LESS_EQUAL
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.GREATER
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.GREATER_EQUAL){
+                if(left_type.type_!= Type.TYPE.INT
+                        ||left_type.dimension>0
+                        ||right_type.dimension>0
+                        ||right_type.type_!= Type.TYPE.INT) throw new SemanticError(node.position,"binary operator error");
+                current_type=new Type(Type.TYPE.BOOL);
+                current_type.assignable=false;
+            }
+            else if(node.binary_op== BinaryExpressionNode.BINARY_OP.EQUAL
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.NOT_EQUAL){
 
+            }
+            else if(node.binary_op== BinaryExpressionNode.BINARY_OP.AND
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.CARET
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.OR){
+                if(left_type.type_!= Type.TYPE.INT
+                        ||left_type.dimension>0
+                        ||right_type.dimension>0
+                        ||right_type.type_!= Type.TYPE.INT) throw new SemanticError(node.position,"binary operator error");
+                current_type=new Type(Type.TYPE.INT);
+                current_type.assignable=false;
+            }
+            else if(node.binary_op== BinaryExpressionNode.BINARY_OP.AND_AND
+                    ||node.binary_op== BinaryExpressionNode.BINARY_OP.OR_OR){
+                if(left_type.type_!= Type.TYPE.BOOL
+                        ||left_type.dimension>0
+                        ||right_type.dimension>0
+                        ||right_type.type_!= Type.TYPE.BOOL) throw new SemanticError(node.position,"binary operator error");
+                current_type=new Type(Type.TYPE.BOOL);
+                current_type.assignable=false;
+            }
+            else throw new SemanticError(node.position,"true false?");
+            /*
+            public enum BINARY_OP{DOT,
+        MULTIPLY,DIVIDE,MOD,                      * / %
+        PLUS,MINUS,                               + -
+        LEFT_SHIFT,RIGHT_SHIFT,                   <<  >>
+        LESS,LESS_EQUAL,GREATER,GREATER_EQUAL,    < <= > >=
+        EQUAL,NOT_EQUAL,                          == !=
+        AND,CARET,OR,                             & ^ |
+        AND_AND,OR_OR,                            && ||
+        ASSIGN}                                   =
+             */
         }
     }
 
     @Override
-    public void visit(BracketExpressionNode node){}
+    public void visit(BracketExpressionNode node){
+        node.expression.accept(this);
+        node.expression.type=new Type(current_type);
+    }
 
     @Override
-    public void visit(FunctionCallExpressionNode node){}
+    public void visit(FunctionCallExpressionNode node){
+        is_function_identifier=true;
+        node.identifier.accept(this);
+        is_function_identifier=false;
+        if(current_type.type_!= Type.TYPE.FUNCTION) throw new SemanticError(node.position,"fail to call function "+node.identifier.toString());
+        ArrayList<Type> para=((FunctionType)current_type).parameters;
+        Type return_type_=((FunctionType)current_type).return_type;
+        if(para.size()!=node.expression_list.expressions.size()) throw new SemanticError(node.position,"size of parameters does not match");
+        for(int i=0;i<para.size();i++){
+            node.expression_list.expressions.get(i).accept(this);
+            Type t=para.get(i);
+            CheckAssignment(node.expression_list.position,t,current_type);
+        }
+        current_type=new Type(return_type_);
+        current_type.assignable=false;
+        node.type=new Type(current_type);
+    }
 
     @Override
-    public void visit(PrefixExpressionNode node){}
+    public void visit(PrefixExpressionNode node){
+        node.expr.accept(this);
+        node.expr.type=new Type(current_type);
+        if(current_type.type_!= Type.TYPE.INT||current_type.dimension>0) throw new SemanticError(node.position,"the type cannot use prefix operator");
+        if(!current_type.assignable) throw new SemanticError(node.position,"the value is not assignable");
+        current_type.assignable=false;
+    }
 
     @Override
-    public void visit(PostfixExpressionNode node){}
+    public void visit(PostfixExpressionNode node){
+        node.expr.accept(this);
+        node.expr.type=new Type(current_type);
+        if(current_type.type_!= Type.TYPE.INT||current_type.dimension>0) throw new SemanticError(node.position,"the type cannot use postfix operator");
+        if(!current_type.assignable) throw new SemanticError(node.position,"the value is not assignable");
+        current_type.assignable=false;
+    }
 
     @Override
-    public void visit(UnaryExpressionNode node){}
+    public void visit(UnaryExpressionNode node){
+        node.expr.accept(this);
+        if(current_type.type_!= Type.TYPE.BOOL||current_type.dimension>0) throw new SemanticError(node.position,"the object cannot use unary operator");
+        current_type.assignable=false;
+        node.type=new Type(current_type);
+    }
 
     @Override
-    public void visit(AtomExpressionNode node){}
+    public void visit(AtomExpressionNode node){
+        if(node.atom_expr== AtomExpressionNode.ATOM_EXPR.THIS){
+            current_type=new Type(Type.TYPE.THIS);
+            current_type.assignable=false;
+        }
+        else if(node.atom_expr== AtomExpressionNode.ATOM_EXPR.NULL){
+            current_type=new Type(Type.TYPE.NULL);
+            current_type.assignable=false;
+        }
+        else if(node.atom_expr== AtomExpressionNode.ATOM_EXPR.UNSIGNED_INTEGER){
+            current_type=new Type(Type.TYPE.INT);
+            current_type.assignable=false;
+        }
+        else if(node.atom_expr== AtomExpressionNode.ATOM_EXPR.BOOL_LITERAL){
+            current_type=new Type(Type.TYPE.BOOL);
+            current_type.assignable=false;
+        }
+        else if(node.atom_expr== AtomExpressionNode.ATOM_EXPR.STRING_OBJECT){
+            current_type=new Type(Type.TYPE.STRING);
+            current_type.assignable=false;
+        }
+        else{
+            if(is_function_identifier){
+                current_type=new FunctionType();
+                ((FunctionType)current_type).return_type=global_scope.GetFunctionReturnType(node.position,node.ID);
+                ((FunctionType)current_type).parameters=global_scope.GetFunctionParameters(node.position,node.ID);
+            }
+            else current_type=new Type(scope.GetType(node.position,true,node.ID));
+        }
+    }
 
     @Override
     public void visit(ParameterNode node){}
@@ -238,12 +474,57 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(FunctionTypeNode node){}
 
     @Override
-    public void visit(VariableTypeNode node){}
+    public void visit(VariableTypeNode node){
+        node.type_.accept(this);
+        current_type.dimension=node.dimension;
+    }
 
     @Override
-    public void visit(TypeNameNode node){}
+    public void visit(TypeNameNode node){
+        if(node.is_basic_type) current_type=new Type(node.basic_type.type_);
+        else{
+            if(!global_scope.ExistClass(true,node.ID)) throw new SemanticError(node.position,"class name not found");
+            current_type=new Type(Type.TYPE.CLASS);
+            current_type.name=node.ID;
+            current_type.is_class=true;
+        }
+    }
 
     @Override
-    public void visit(LambdaStatementNode node){}
+    public void visit(LambdaStatementNode node){
+        scope=new Scope(scope);
+        ArrayList<Type> para=new ArrayList<>();
+        if(node.parameter_def!=null){
+            node.parameter_def.parameters.forEach(it->{
+                it.type_.accept(this);
+                scope.DefineVariable(it.position,it.name,current_type);
+                para.add(current_type);
+            });
+        }
+        Type tmp_type=lambda_return_type;
+        int tmp_cnt=count_in_loop;
+        String tmp_name=name_;
+        boolean tmp_judge=is_returned;
+        count_in_loop=0;
+        name_="_lambda";
+        is_returned=false;
+        node.statement_block.accept(this);
+        if(!is_returned) throw new SemanticError(node.position,"lambda statement should return something");
+        Type t=new Type(tmp_type);
+        lambda_return_type=tmp_type;
+        count_in_loop=tmp_cnt;
+        name_=tmp_name;
+        is_returned=tmp_judge;
+        scope=scope.parent_scope;
+        if(node.expression_list.expressions.size()!=para.size()) throw new SemanticError(node.position,"parameter size does not match");
+        for(int i=0;i<para.size();i++){
+            node.expression_list.expressions.get(i).accept(this);
+            tmp_type=para.get(i);
+            CheckAssignment(node.position,tmp_type,current_type);
+        }
+        current_type=t;
+        current_type.assignable=false;
+        node.type=new Type(current_type);
+    }
 
 }

@@ -1,7 +1,7 @@
 package AST;
 
 import basic.Locate;
-import basic.types.FunctionType;
+import basic.types.*;
 
 public class FunctionDefNode extends DefinitionNode{
     public FunctionTypeNode return_type=null;
