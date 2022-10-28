@@ -1,21 +1,38 @@
-string[] str_arr = null;
-int main() {
-    int la = getInt();
-    str_arr = new string[la];
-    int i;
-    int cnt = 0;
-    for(i = 0; i < la; i++){
-        str_arr[i] = getString();
-        cnt = cnt + str_arr[i].length();
+/*
+Test Package: Sema_Local_Preview
+Test Target: Basic
+Author: 16' Yunfeng Lin
+Time: 2019-11-11
+Verdict: Success
+Origin Package: Semantic Pretest
+*/
+class A
+{
+    int b;
+    B foo;
+    A f()
+    {
+        return foo.g().foo;
     }
-    string str = "";
-    int sum = 0;
-    for(i = 0; i < la; ++i){
-        str = str + str_arr[i].substring(0, str_arr[i].length() - 1);
-        sum = sum + str_arr[i].ord(0);
-    }
-    println(str);
-    print(toString(sum));
-    if (cnt == str.length()) return 0;
-    else return 1;
+};
+
+int main()
+{
+    B foo;
+    foo = (foo.foo.foo).foo.foo.foo.foo.g();
+    foo.foo.f().foo.g().foo.foo.g();
+    foo.foo.foo.foo.foo.foo.foo.g().foo.b = getString().length();
+    return 0;
 }
+
+class B
+{
+    int a;
+    A foo;
+    B g()
+    {
+        //test left value for increment result
+        (++(++a))++;
+        return foo.f().foo;
+    }
+};
