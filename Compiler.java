@@ -14,12 +14,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-public class Main {
+public class Compiler {
     public static void main(String[] args) throws Exception{
-        String file_name="test.mx";
-        InputStream raw=new FileInputStream(file_name);
+        //String file_name="basic-66.mx";
+        //InputStream raw=new FileInputStream(file_name);
         try {
-            CharStream input=CharStreams.fromStream(raw);
+            CharStream input=CharStreams.fromStream(System.in);
             MxStarLexer lexer=new MxStarLexer(input);
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxStarErrorListener());

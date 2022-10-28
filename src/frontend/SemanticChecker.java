@@ -243,7 +243,7 @@ public class SemanticChecker implements ASTVisitor {
                 tag2=true;
             }
         }
-        if(!tag2) throw new SemanticError(node.position,"array assignment error");
+        if(!tag2&&exist_empty_bracket) throw new SemanticError(node.position,"array assignment error");
         /*
         node.new_sizes.forEach(it->{
             if(it==null) throw new SemanticError(node.position,"true false?");
