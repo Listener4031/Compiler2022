@@ -230,6 +230,21 @@ public class SemanticChecker implements ASTVisitor {
         if(node.type_.is_basic_type) tmp_type=new Type(node.type_.basic_type.type_,0,true);
         else tmp_type=new Type(node.type_.ID,0,true);
         tmp_type.dimension=node.new_sizes.size();
+        boolean exist_empty_bracket=false;
+        boolean tag2=false;
+        for(int i=0;i<node.new_sizes.size();i++){
+            BracketExpressionNode tmp_node=node.new_sizes.get(i);
+            if(tmp_node.expression_==null) exist_empty_bracket=true;
+            else{
+                if(exist_empty_bracket) throw new SemanticError(tmp_node.position,"array assignment error");
+                tmp_node.expression_.accept(this);
+                if(current_type.type_!= Type.TYPE.INT
+                        ||current_type.dimension>0) throw new SemanticError(node.position,"type of index should be int");
+                tag2=true;
+            }
+        }
+        if(!tag2) throw new SemanticError(node.position,"array assignment error");
+        /*
         node.new_sizes.forEach(it->{
             if(it==null) throw new SemanticError(node.position,"true false?");
             if(it.expression_!=null){
@@ -238,6 +253,7 @@ public class SemanticChecker implements ASTVisitor {
                         ||current_type.dimension>0) throw new SemanticError(node.position,"type of index should be int");
             }
         });
+         */
         current_type=tmp_type;
         node.type=new Type(current_type);
     }
@@ -252,7 +268,8 @@ public class SemanticChecker implements ASTVisitor {
         boolean tmp_switch=is_function_identifier;
         is_function_identifier=false;
         node.index.accept(this);
-        if(current_type.type_!= Type.TYPE.INT||current_type.dimension>0) throw new SemanticError(node.index.position,"array index should be int");
+        if(current_type.type_!= Type.TYPE.INT
+                ||current_type.dimension>0) throw new SemanticError(node.index.position,"array index should be int");
         is_function_identifier=tmp_switch;
         node.index.type=new Type(current_type);
         node.identifier.accept(this);
