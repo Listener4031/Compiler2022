@@ -2,12 +2,12 @@ package AST;
 
 import basic.Locate;
 
-public class BracketExpressionNode extends ExpressionNode{
-    public ExpressionNode expression;
+public class BracketExpressionNode extends ASTNode{
+    public ExpressionNode expression_;
 
-    public BracketExpressionNode(Locate l,ExpressionNode e){
+    public BracketExpressionNode(Locate l,ExpressionNode _expression){
         super(l);
-        expression=e;
+        expression_=_expression;
     }
 
     @Override

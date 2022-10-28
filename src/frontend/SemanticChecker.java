@@ -234,9 +234,12 @@ public class SemanticChecker implements ASTVisitor {
         else tmp_type=new Type(node.type_.ID,0,true);
         tmp_type.dimension=node.new_sizes.size();
         node.new_sizes.forEach(it->{
-            if(it==null) throw new SemanticError(node.position,"type of index should be int");
-            it.accept(this);
-            if(current_type.type_!= Type.TYPE.INT||current_type.dimension>0) throw new SemanticError(node.position,"type of index should be int");
+            if(it==null) throw new SemanticError(node.position,"true false?");
+            if(it.expression_!=null){
+                it.expression_.accept(this);
+                if(current_type.type_!= Type.TYPE.INT
+                        ||current_type.dimension>0) throw new SemanticError(node.position,"type of index should be int");
+            }
         });
         current_type=tmp_type;
         node.type=new Type(current_type);
@@ -396,8 +399,10 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(BracketExpressionNode node){
-        node.expression.accept(this);
-        node.expression.type=new Type(current_type);
+        if(node.expression_!=null){
+            node.expression_.accept(this);
+            node.type=new Type(current_type);
+        }
     }
 
     @Override
@@ -412,6 +417,7 @@ public class SemanticChecker implements ASTVisitor {
         for(int i=0;i<para.size();i++){
             node.expression_list.expressions.get(i).accept(this);
             Type t=para.get(i);
+            t.assignable=true;
             CheckAssignment(node.expression_list.position,t,current_type);
         }
         current_type=new Type(return_type_);
@@ -478,6 +484,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(VariableTypeNode node){
         node.type_.accept(this);
         current_type.dimension=node.dimension;
+        node.type=new Type(current_type);
     }
 
     @Override
@@ -524,6 +531,12 @@ public class SemanticChecker implements ASTVisitor {
         current_type=t;
         current_type.assignable=false;
         node.type=new Type(current_type);
+    }
+
+    @Override
+    public void visit(ParentheseExpressionNode node){
+        node.expression_.accept(this);
+        node.expression_.type=new Type(current_type);
     }
 
 }

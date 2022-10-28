@@ -41,6 +41,12 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableType(MxStarParser.VariableTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MxStarParser#bracketExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBracketExpression(MxStarParser.BracketExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MxStarParser#newVar}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -224,6 +230,13 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPrefixExpression(MxStarParser.PrefixExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code parentheseExpression}
+	 * labeled alternative in {@link MxStarParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParentheseExpression(MxStarParser.ParentheseExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code arrayExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
@@ -258,13 +271,6 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUnaryExpression(MxStarParser.UnaryExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code bracketExpression}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBracketExpression(MxStarParser.BracketExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code postfixExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.

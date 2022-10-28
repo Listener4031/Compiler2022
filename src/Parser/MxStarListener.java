@@ -58,6 +58,16 @@ public interface MxStarListener extends ParseTreeListener {
 	 */
 	void exitVariableType(MxStarParser.VariableTypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MxStarParser#bracketExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBracketExpression(MxStarParser.BracketExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxStarParser#bracketExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBracketExpression(MxStarParser.BracketExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MxStarParser#newVar}.
 	 * @param ctx the parse tree
 	 */
@@ -364,6 +374,18 @@ public interface MxStarListener extends ParseTreeListener {
 	 */
 	void exitPrefixExpression(MxStarParser.PrefixExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code parentheseExpression}
+	 * labeled alternative in {@link MxStarParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterParentheseExpression(MxStarParser.ParentheseExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code parentheseExpression}
+	 * labeled alternative in {@link MxStarParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitParentheseExpression(MxStarParser.ParentheseExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code arrayExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.
 	 * @param ctx the parse tree
@@ -423,18 +445,6 @@ public interface MxStarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUnaryExpression(MxStarParser.UnaryExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code bracketExpression}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterBracketExpression(MxStarParser.BracketExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code bracketExpression}
-	 * labeled alternative in {@link MxStarParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitBracketExpression(MxStarParser.BracketExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code postfixExpression}
 	 * labeled alternative in {@link MxStarParser#expression}.

@@ -23,7 +23,7 @@ public interface ASTVisitor {
     void visit(ExpressionListNode node);
     void visit(ArrayExpressionNode node);
     void visit(BinaryExpressionNode node);
-    void visit(BracketExpressionNode node);
+    void visit(ParentheseExpressionNode node);
     void visit(FunctionCallExpressionNode node);
     void visit(PrefixExpressionNode node);
     void visit(PostfixExpressionNode node);
@@ -36,4 +36,5 @@ public interface ASTVisitor {
     void visit(VariableTypeNode node);
     void visit(TypeNameNode node);
     void visit(LambdaStatementNode node);
+    void visit(BracketExpressionNode node);
 }

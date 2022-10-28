@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class NewVariableNode extends ExpressionNode{
     public TypeNameNode type_;
-    public ArrayList<ExpressionNode> new_sizes;
+    public ArrayList<BracketExpressionNode> new_sizes;
 
     public NewVariableNode(Locate l,TypeNameNode t){
         super(l);

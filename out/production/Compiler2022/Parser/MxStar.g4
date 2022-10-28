@@ -7,7 +7,8 @@ definition: globalvariableDefStatement | functionDef | classDef;
 basicType: Int | Bool | String;
 typeName: basicType | Identifier; //int , string, MyClass
 variableType: typeName ('[' ']')* ;    // int ,bool[][], MyClass[]
-newVar: typeName ('(' ')' | ('[' expression? ']')*) ;  //  int(), MyClass[][1+2][]
+bracketExpression: '[' expression? ']';
+newVar: typeName ('(' ')' | (bracketExpression*));   //  int(), MyClass[][1+2][]
 functionType: Void | variableType;
 
 variableDeclaration: Identifier ('=' expression)?;     // bool v = false, v2;
@@ -80,7 +81,7 @@ expression: lambdaStatement                                                     
           | expression op = AND expression                                            #binaryExpression
           | expression op = OR expression                                             #binaryExpression
           | <assoc=right> expression Assign expression                                #binaryExpression
-          | '(' expression ')'                                                        #bracketExpression
+          | '(' expression ')'                                                        #parentheseExpression
           | atomExpr                                                                  #atomExpression
           ;
 

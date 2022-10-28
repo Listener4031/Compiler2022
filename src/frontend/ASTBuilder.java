@@ -41,7 +41,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
     @Override public ASTNode visitNewVar(MxStarParser.NewVarContext ctx) {
         Locate l=new Locate(ctx);
         NewVariableNode new_node=new NewVariableNode(l,(TypeNameNode) visit(ctx.typeName()));
-        ctx.expression().forEach(it->new_node.new_sizes.add((ExpressionNode) visit(it)));
+        ctx.bracketExpression().forEach(it->new_node.new_sizes.add((BracketExpressionNode) visit(it)));
         return new_node;
     }
 
@@ -319,12 +319,10 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
     @Override public ASTNode visitArrayExpression(MxStarParser.ArrayExpressionContext ctx) {
         Locate l=new Locate(ctx);
         return new ArrayExpressionNode(l,(ExpressionNode) visit(ctx.expression(0)),(ExpressionNode) visit(ctx.expression(1)));
-        //return visitChildren(ctx);
     }
 
     @Override public ASTNode visitAtomExpression(MxStarParser.AtomExpressionContext ctx) {
         return visit(ctx.atomExpr());
-        //return visitChildren(ctx);
     }
 
     @Override public ASTNode visitNewExpression(MxStarParser.NewExpressionContext ctx) {
@@ -359,7 +357,14 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
 
     @Override public ASTNode visitBracketExpression(MxStarParser.BracketExpressionContext ctx) {
         Locate l=new Locate(ctx);
-        return new BracketExpressionNode(l,(ExpressionNode) visit(ctx.expression()));
+        BracketExpressionNode new_node=new BracketExpressionNode(l,null);
+        if(ctx.expression()!=null) new_node.expression_=(ExpressionNode) visit(ctx.expression());
+        return new_node;
+    }
+
+    @Override public ASTNode visitParentheseExpression(MxStarParser.ParentheseExpressionContext ctx){
+        Locate l=new Locate(ctx);
+        return new ParentheseExpressionNode(l,(ExpressionNode) visit(ctx.expression()));
     }
 }
 

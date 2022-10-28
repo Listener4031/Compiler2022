@@ -229,7 +229,6 @@ public class SymbolCollector implements ASTVisitor {
         node.type_.accept(this);
         type_.dimension=node.dimension;
         node.type=type_;
-        //throw new RuntimeException();
     }
 
     @Override
@@ -239,10 +238,12 @@ public class SymbolCollector implements ASTVisitor {
             if(!global_scope.ExistClass(true,node.ID)) throw new SemanticError(node.position,"class not found");
             type_=new Type(node.ID,0,true);
         }
-        node.type=type_;
     }
 
     @Override
     public void visit(LambdaStatementNode node){}
+
+    @Override
+    public void visit(ParentheseExpressionNode node){}
 
 }

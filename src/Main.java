@@ -16,7 +16,7 @@ import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        String file_name="test.mx";
+        String file_name="basic-52.mx";
         InputStream raw=new FileInputStream(file_name);
         try {
             CharStream input=CharStreams.fromStream(raw);
@@ -36,7 +36,6 @@ public class Main {
         }
         catch (Error error){
             System.err.println(error.toString());
-            throw new RuntimeException();
         }
     }
 }
