@@ -180,13 +180,10 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(ReturnStatementNode node){
-        if(node.expression==null){
-            current_type=new Type(Type.TYPE.VOID,0,false);
-            current_type.assignable=false;
-        }
+        if(node.expression==null) current_type=new Type(Type.TYPE.VOID,0,false);
         else node.expression.accept(this);
         Type return_type_;
-        if(name_.equals(new String("_lambda"))){
+        if(name_.equals("_lambda")){
             if(lambda_return_type==null) lambda_return_type=new Type(current_type);
             return_type_=lambda_return_type;
         }
@@ -276,7 +273,7 @@ public class SemanticChecker implements ASTVisitor {
             Type left_type=current_type;
             if(left_type.dimension>=1) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,"_array");
             else if(left_type.type_== Type.TYPE.STRING) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,"string");
-            else if(left_type.type_== Type.TYPE.CLASS) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,left_type.name);
+            else if(left_type.is_class) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,left_type.name);
             else if(left_type.type_!= Type.TYPE.THIS) throw new SemanticError(node.position,"dot operator cannot be used");
             Scope tmp_scope=scope;
             scope=global_scope;
@@ -351,13 +348,22 @@ public class SemanticChecker implements ASTVisitor {
             }
             else if(node.binary_op== BinaryExpressionNode.BINARY_OP.EQUAL
                     ||node.binary_op== BinaryExpressionNode.BINARY_OP.NOT_EQUAL){
-                if(left_type.type_== Type.TYPE.NULL) throw new SemanticError(node.position,"left value should not be null");
-                if(right_type.type_== Type.TYPE.NULL){
-                    if((left_type.type_== Type.TYPE.INT||left_type.type_== Type.TYPE.BOOL||left_type.type_== Type.TYPE.STRING)
-                            &&left_type.dimension==0&&right_type.dimension==0){
-                        throw new SemanticError(node.position,"the value cannot be compared with null");
+                //if(left_type.type_== Type.TYPE.NULL) throw new SemanticError(node.position,"left value should not be null");
+                if(right_type.type_== Type.TYPE.NULL||left_type.type_==Type.TYPE.NULL){
+                    if(right_type.type_== Type.TYPE.NULL){
+                        if((left_type.type_== Type.TYPE.INT||left_type.type_== Type.TYPE.BOOL||left_type.type_== Type.TYPE.STRING)
+                                &&left_type.dimension==0&&right_type.dimension==0){
+                            throw new SemanticError(node.position,"the value cannot be compared with null");
+                        }
+                        else current_type=new Type(Type.TYPE.BOOL,0,false);
                     }
-                    else current_type=new Type(Type.TYPE.BOOL,0,false);
+                    else{
+                        if((right_type.type_== Type.TYPE.INT||right_type.type_== Type.TYPE.BOOL||right_type.type_== Type.TYPE.STRING)
+                                &&right_type.dimension==0&&left_type.dimension==0){
+                            throw new SemanticError(node.position,"the value cannot be compared with null");
+                        }
+                        else current_type=new Type(Type.TYPE.BOOL,0,false);
+                    }
                 }
                 else{
                     if(left_type.dimension>0) throw new SemanticError(node.position,"array could only compare with null");
@@ -431,7 +437,6 @@ public class SemanticChecker implements ASTVisitor {
         node.expr.type=new Type(current_type);
         if(current_type.type_!= Type.TYPE.INT||current_type.dimension>0) throw new SemanticError(node.position,"the type cannot use prefix operator");
         if(!current_type.assignable) throw new SemanticError(node.position,"the value is not assignable");
-        current_type.assignable=false;
     }
 
     @Override
@@ -446,9 +451,19 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(UnaryExpressionNode node){
         node.expr.accept(this);
-        if(current_type.type_!= Type.TYPE.BOOL||current_type.dimension>0) throw new SemanticError(node.position,"the object cannot use unary operator");
+        if(node.unary_op== UnaryExpressionNode.UNARY_OP.NOT){
+            if(current_type.type_!= Type.TYPE.BOOL
+                    ||current_type.dimension>0) throw new SemanticError(node.position,"the object cannot use unary operator");
+        }
+        else{
+            if(current_type.type_!= Type.TYPE.INT
+                    ||current_type.dimension>0) throw new SemanticError(node.position,"the object cannot use unary operator");
+        }
         current_type.assignable=false;
         node.type=new Type(current_type);
+        /*
+        public enum UNARY_OP{PLUS,MINUS,TILDE,NOT}
+         */
     }
 
     @Override

@@ -52,6 +52,7 @@ public class Type {
             parameters=_type.parameters;
         }
         else if(_type.is_class){
+            type_=TYPE.CLASS;
             dimension=_type.dimension;
             name=_type.name;
             assignable=_type.assignable;
