@@ -293,7 +293,7 @@ public class SemanticChecker implements ASTVisitor {
             else if(left_type.is_class) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,left_type.name);
             else if(left_type.type_!= Type.TYPE.THIS) throw new SemanticError(node.position,"dot operator cannot be used");
             Scope tmp_scope=scope;
-            scope=global_scope;
+            //scope=global_scope;
             node.right_expression.accept(this);
             node.right_expression.type=new Type(current_type);
             global_scope=tmp_global_scope;
