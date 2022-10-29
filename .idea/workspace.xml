@@ -92,9 +92,14 @@
           <option name="timeStamp" value="233" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/basic/Scope.java</url>
+          <line>39</line>
+          <option name="timeStamp" value="235" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>195</line>
-          <option name="timeStamp" value="234" />
+          <line>508</line>
+          <option name="timeStamp" value="236" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

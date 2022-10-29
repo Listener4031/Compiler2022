@@ -186,9 +186,12 @@ public class SemanticChecker implements ASTVisitor {
         else node.expression.accept(this);
         Type return_type_;
         if(name_.equals("_lambda")){
-            if(lambda_return_type==null) lambda_return_type=new Type(current_type);
+            if(lambda_return_type==null){
+                lambda_return_type=new Type(current_type);
+                lambda_return_type.assignable=true;
+            }
             return_type_=lambda_return_type;
-            return_type_.assignable=true;
+            //return_type_.assignable=true;
         }
         else return_type_=global_scope.GetFunctionReturnType(node.position,name_);
         if(return_type_.type_== Type.TYPE.VOID){
@@ -499,9 +502,9 @@ public class SemanticChecker implements ASTVisitor {
         else if(node.atom_expr== AtomExpressionNode.ATOM_EXPR.STRING_OBJECT) current_type=new Type(Type.TYPE.STRING,0,false);
         else{
             if(is_function_identifier){
-                Type return_type_=global_scope.GetFunctionReturnType(node.position,node.ID);
-                ArrayList<Type> para=global_scope.GetFunctionParameters(node.position,node.ID);
-                current_type=new Type(node.ID,return_type_,para);
+                current_type=new Type(node.ID,null,null);
+                current_type.return_type=global_scope.GetFunctionReturnType(node.position,node.ID);
+                current_type.parameters=global_scope.GetFunctionParameters(node.position,node.ID);
             }
             else current_type=new Type(scope.GetType(node.position,true,node.ID));
         }
@@ -556,7 +559,7 @@ public class SemanticChecker implements ASTVisitor {
         is_returned=false;
         node.statement_block.accept(this);
         if(!is_returned) throw new SemanticError(node.position,"lambda statement should return something");
-        Type t=new Type(tmp_type);
+        Type t=new Type(lambda_return_type);
         lambda_return_type=tmp_type;
         count_in_loop=tmp_cnt;
         name_=tmp_name;
