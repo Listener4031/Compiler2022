@@ -216,7 +216,7 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(ClassConstructorNode node){
         scope=new Scope(scope);
-        Type t=new Type(node.name,0,false);
+        Type t=new Type(Type.TYPE.VOID,0,false);
         t.name=node.name;
         global_scope.DefineFunction(node.position,node.name,scope,t,new ArrayList<>());
         name_=node.name;
