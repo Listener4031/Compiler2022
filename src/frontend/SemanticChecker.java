@@ -439,7 +439,7 @@ public class SemanticChecker implements ASTVisitor {
         is_function_identifier=false;
         if(current_type.type_!= Type.TYPE.FUNCTION) throw new SemanticError(node.position,"fail to call function "+node.identifier.toString());
         Scope tmp_scope=scope;
-        scope=((GlobalScope) scope).GetFunctionScope(node.position,name_);
+        if(name_.equals("c")) scope=((GlobalScope) scope).GetFunctionScope(node.position,name_);
         ArrayList<Type> para=current_type.parameters;
         Type return_type_=current_type.return_type;
         if(para.size()!=node.expression_list.expressions.size()) throw new SemanticError(node.position,"size of parameters does not match");
