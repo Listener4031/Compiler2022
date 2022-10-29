@@ -64,6 +64,8 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(FunctionDefNode node){
         scope=global_scope.GetFunctionScope(node.position,node.name);
         name_=node.name;
+        is_returned=false;
+        count_in_loop=0;
         node.statement_block.accept(this);
         if(!name_.equals("main")){
             current_type=global_scope.GetFunctionReturnType(node.position,node.name);
