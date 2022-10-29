@@ -61,8 +61,8 @@ atomExpr: This
         ;
 expressionList:'(' (expression (',' expression)*)? ')';
 expression: lambdaStatement                                                           #lambdaExpression
-          | expression expressionList                                                 #functionCallExpression
           | expression Dot expression                                                 #binaryExpression
+          | expression expressionList                                                 #functionCallExpression
           | expression '[' expression ']'                                             #arrayExpression
           | <assoc=right> (SelfPlus | SelfMinus) expression                           #prefixExpression
           | expression (SelfPlus | SelfMinus)                                         #postfixExpression

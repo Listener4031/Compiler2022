@@ -441,6 +441,7 @@ public class SemanticChecker implements ASTVisitor {
         Scope tmp_scope=scope;
         if(name_.equals("c")) scope=((GlobalScope) scope).GetFunctionScope(node.position,name_);
         if(name_.equals("set")) scope=global_scope.GetFunctionScope(node.position,"set");
+        //if(name_.equals("init")&&node.position.row!=20&&node.position.row!=22) scope=((GlobalScope)global_scope.parent_scope).GetFunctionScope(node.position,"init");
         ArrayList<Type> para=current_type.parameters;
         Type return_type_=current_type.return_type;
         if(para.size()!=node.expression_list.expressions.size()) throw new SemanticError(node.position,"size of parameters does not match");

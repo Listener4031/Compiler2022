@@ -124,7 +124,7 @@ public class SymbolCollector implements ASTVisitor {
         Type variable_type=type_;
         node.variable_declarations.forEach(it->{
             if(global_scope.ExistClass(true,it.name)){
-                throw new SemanticError(it.position,"variable has the same name with a class");
+                throw new SemanticError(it.position,"variable name duplicates with class");
             }
             else scope.DefineVariable(it.position,it.name,variable_type);
         });

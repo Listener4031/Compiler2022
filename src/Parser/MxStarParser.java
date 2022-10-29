@@ -2688,11 +2688,11 @@ public class MxStarParser extends Parser {
 						_localctx = new BinaryExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(304);
-						if (!(precpred(_ctx, 21))) throw new FailedPredicateException(this, "precpred(_ctx, 21)");
+						if (!(precpred(_ctx, 22))) throw new FailedPredicateException(this, "precpred(_ctx, 22)");
 						setState(305);
 						match(Dot);
 						setState(306);
-						expression(22);
+						expression(23);
 						}
 						break;
 					case 2:
@@ -2877,7 +2877,7 @@ public class MxStarParser extends Parser {
 						_localctx = new FunctionCallExpressionContext(new ExpressionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expression);
 						setState(340);
-						if (!(precpred(_ctx, 22))) throw new FailedPredicateException(this, "precpred(_ctx, 22)");
+						if (!(precpred(_ctx, 21))) throw new FailedPredicateException(this, "precpred(_ctx, 21)");
 						setState(341);
 						expressionList();
 						}
@@ -2944,7 +2944,7 @@ public class MxStarParser extends Parser {
 	private boolean expression_sempred(ExpressionContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 21);
+			return precpred(_ctx, 22);
 		case 1:
 			return precpred(_ctx, 13);
 		case 2:
@@ -2968,7 +2968,7 @@ public class MxStarParser extends Parser {
 		case 11:
 			return precpred(_ctx, 3);
 		case 12:
-			return precpred(_ctx, 22);
+			return precpred(_ctx, 21);
 		case 13:
 			return precpred(_ctx, 20);
 		case 14:
@@ -3170,8 +3170,8 @@ public class MxStarParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u012e\u0123\u0001\u0000\u0000\u0000\u012e\u0125"+
 		"\u0001\u0000\u0000\u0000\u012e\u0127\u0001\u0000\u0000\u0000\u012e\u0129"+
 		"\u0001\u0000\u0000\u0000\u012e\u012d\u0001\u0000\u0000\u0000\u012f\u015f"+
-		"\u0001\u0000\u0000\u0000\u0130\u0131\n\u0015\u0000\u0000\u0131\u0132\u0005"+
-		"2\u0000\u0000\u0132\u015e\u0003B!\u0016\u0133\u0134\n\r\u0000\u0000\u0134"+
+		"\u0001\u0000\u0000\u0000\u0130\u0131\n\u0016\u0000\u0000\u0131\u0132\u0005"+
+		"2\u0000\u0000\u0132\u015e\u0003B!\u0017\u0133\u0134\n\r\u0000\u0000\u0134"+
 		"\u0135\u0007\u0004\u0000\u0000\u0135\u015e\u0003B!\u000e\u0136\u0137\n"+
 		"\f\u0000\u0000\u0137\u0138\u0007\u0003\u0000\u0000\u0138\u015e\u0003B"+
 		"!\r\u0139\u013a\n\u000b\u0000\u0000\u013a\u013b\u0007\u0005\u0000\u0000"+
@@ -3185,7 +3185,7 @@ public class MxStarParser extends Parser {
 		",\u0000\u0000\u014d\u015e\u0003B!\u0006\u014e\u014f\n\u0004\u0000\u0000"+
 		"\u014f\u0150\u0005-\u0000\u0000\u0150\u015e\u0003B!\u0005\u0151\u0152"+
 		"\n\u0003\u0000\u0000\u0152\u0153\u00053\u0000\u0000\u0153\u015e\u0003"+
-		"B!\u0003\u0154\u0155\n\u0016\u0000\u0000\u0155\u015e\u0003@ \u0000\u0156"+
+		"B!\u0003\u0154\u0155\n\u0015\u0000\u0000\u0155\u015e\u0003@ \u0000\u0156"+
 		"\u0157\n\u0014\u0000\u0000\u0157\u0158\u0005\u0014\u0000\u0000\u0158\u0159"+
 		"\u0003B!\u0000\u0159\u015a\u0005\u0015\u0000\u0000\u015a\u015e\u0001\u0000"+
 		"\u0000\u0000\u015b\u015c\n\u0012\u0000\u0000\u015c\u015e\u0007\u0002\u0000"+
