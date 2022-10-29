@@ -1,23 +1,12 @@
 /*
 Test Package: Sema_Local_Preview
-Test Target: Basic
-Author: 16' Yuxuan Duan
-Time: 2019-11-11
+Test Target: Lambda-1
+Author: 17' zwx
 Verdict: Success
 Origin Package: Semantic Pretest
 */
-class A
-{
-	void b(int d)
-	{
-	}
-	int e;
-	
-	void c(int b)
-	{
-		this.b(b);
-	}
-};
-int main()
-{
+
+int main(){
+    int d = [&]() -> { return 10; }();
+    return d;
 }

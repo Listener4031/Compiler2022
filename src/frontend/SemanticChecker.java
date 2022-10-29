@@ -188,6 +188,7 @@ public class SemanticChecker implements ASTVisitor {
         if(name_.equals("_lambda")){
             if(lambda_return_type==null) lambda_return_type=new Type(current_type);
             return_type_=lambda_return_type;
+            return_type_.assignable=true;
         }
         else return_type_=global_scope.GetFunctionReturnType(node.position,name_);
         if(return_type_.type_== Type.TYPE.VOID){
@@ -439,9 +440,6 @@ public class SemanticChecker implements ASTVisitor {
         is_function_identifier=false;
         if(current_type.type_!= Type.TYPE.FUNCTION) throw new SemanticError(node.position,"fail to call function "+node.identifier.toString());
         Scope tmp_scope=scope;
-        //if(name_.equals("c")) scope=((GlobalScope) scope).GetFunctionScope(node.position,name_);
-        //if(name_.equals("set")) scope=global_scope.GetFunctionScope(node.position,"set");
-        //if(name_.equals("init")&&node.position.row!=20&&node.position.row!=22) scope=((GlobalScope)global_scope.parent_scope).GetFunctionScope(node.position,"init");
         ArrayList<Type> para=current_type.parameters;
         Type return_type_=current_type.return_type;
         if(para.size()!=node.expression_list.expressions.size()) throw new SemanticError(node.position,"size of parameters does not match");
