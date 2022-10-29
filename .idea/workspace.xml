@@ -8,6 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SemanticChecker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/frontend/SemanticChecker.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/frontend/SemanticChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/SemanticChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.mx" beforeDir="false" afterPath="$PROJECT_DIR$/test.mx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,93 +102,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>446</line>
-          <option name="timeStamp" value="204" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>447</line>
-          <option name="timeStamp" value="205" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>64</line>
-          <option name="timeStamp" value="206" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>65</line>
-          <option name="timeStamp" value="207" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>73</line>
-          <option name="timeStamp" value="208" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>74</line>
-          <option name="timeStamp" value="209" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>303</line>
-          <option name="timeStamp" value="210" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>304</line>
-          <option name="timeStamp" value="211" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>302</line>
-          <option name="timeStamp" value="212" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SymbolCollector.java</url>
-          <line>109</line>
-          <option name="timeStamp" value="213" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SymbolCollector.java</url>
-          <line>108</line>
-          <option name="timeStamp" value="214" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SymbolCollector.java</url>
-          <line>110</line>
-          <option name="timeStamp" value="215" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SymbolCollector.java</url>
-          <line>111</line>
-          <option name="timeStamp" value="216" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>437</line>
-          <option name="timeStamp" value="218" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
-          <line>438</line>
-          <option name="timeStamp" value="219" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SymbolCollector.java</url>
-          <line>112</line>
-          <option name="timeStamp" value="222" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
           <line>442</line>
           <option name="timeStamp" value="224" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/frontend/SemanticChecker.java</url>
           <line>441</line>
-          <option name="timeStamp" value="225" />
+          <option name="timeStamp" value="227" />
         </line-breakpoint>
         <breakpoint type="java-exception">
           <properties class="java.lang.NullPointerException" package="java.lang" />
@@ -200,6 +121,10 @@
         <breakpoint enabled="true" type="java-exception">
           <properties class="basic.error.SemanticError" package="basic.error" />
           <option name="timeStamp" value="48" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ClassCastException" package="java.lang" />
+          <option name="timeStamp" value="226" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
