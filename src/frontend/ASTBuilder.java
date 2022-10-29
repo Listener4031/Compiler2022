@@ -223,7 +223,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
     @Override public ASTNode visitLambdaStatement(MxStarParser.LambdaStatementContext ctx) {
         Locate l=new Locate(ctx);
         FunctionParameterDefNode node=null;
-        if(ctx.functionParameterDef()!=null) node=new FunctionParameterDefNode(l);
+        if(ctx.functionParameterDef()!=null) node=(FunctionParameterDefNode) visit(ctx.functionParameterDef());
         return new LambdaStatementNode(l,node,(StatementBlockNode) visit(ctx.statementBlock()),(ExpressionListNode) visit(ctx.expressionList()));
     }
 
