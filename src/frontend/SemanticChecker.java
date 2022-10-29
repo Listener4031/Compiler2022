@@ -439,7 +439,7 @@ public class SemanticChecker implements ASTVisitor {
         is_function_identifier=false;
         if(current_type.type_!= Type.TYPE.FUNCTION) throw new SemanticError(node.position,"fail to call function "+node.identifier.toString());
         Scope tmp_scope=scope;
-        if(name_.equals("c")) scope=((GlobalScope) scope).GetFunctionScope(node.position,name_);
+        //if(name_.equals("c")) scope=((GlobalScope) scope).GetFunctionScope(node.position,name_);
         //if(name_.equals("set")) scope=global_scope.GetFunctionScope(node.position,"set");
         //if(name_.equals("init")&&node.position.row!=20&&node.position.row!=22) scope=((GlobalScope)global_scope.parent_scope).GetFunctionScope(node.position,"init");
         ArrayList<Type> para=current_type.parameters;
