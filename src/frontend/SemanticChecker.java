@@ -295,7 +295,9 @@ public class SemanticChecker implements ASTVisitor {
             else if(left_type.is_class) global_scope=(GlobalScope) global_scope.GetClassScope(node.position,left_type.name);
             else if(left_type.type_!= Type.TYPE.THIS) throw new SemanticError(node.position,"dot operator cannot be used");
             Scope tmp_scope=scope;
-            if(left_type.type_!=Type.TYPE.STRING) scope=global_scope;
+            if(left_type.type_!=Type.TYPE.STRING){
+                scope=global_scope;
+            }
             node.right_expression.accept(this);
             node.right_expression.type=new Type(current_type);
             global_scope=tmp_global_scope;
@@ -436,6 +438,8 @@ public class SemanticChecker implements ASTVisitor {
         node.identifier.accept(this);
         is_function_identifier=false;
         if(current_type.type_!= Type.TYPE.FUNCTION) throw new SemanticError(node.position,"fail to call function "+node.identifier.toString());
+        Scope tmp_scope=scope;
+        scope=((GlobalScope) scope).GetFunctionScope(node.position,name_);
         ArrayList<Type> para=current_type.parameters;
         Type return_type_=current_type.return_type;
         if(para.size()!=node.expression_list.expressions.size()) throw new SemanticError(node.position,"size of parameters does not match");
@@ -445,6 +449,7 @@ public class SemanticChecker implements ASTVisitor {
             t.assignable=true;
             CheckAssignment(node.expression_list.position,t,current_type);
         }
+        scope=tmp_scope;
         current_type=new Type(return_type_);
         current_type.assignable=false;
         node.type=new Type(current_type);
@@ -494,12 +499,13 @@ public class SemanticChecker implements ASTVisitor {
         else if(node.atom_expr== AtomExpressionNode.ATOM_EXPR.STRING_OBJECT) current_type=new Type(Type.TYPE.STRING,0,false);
         else{
             if(is_function_identifier){
-                current_type=new Type(node.ID,null,null);
-                current_type.return_type=global_scope.GetFunctionReturnType(node.position,node.ID);
-                current_type.parameters=global_scope.GetFunctionParameters(node.position,node.ID);
+                Type return_type_=global_scope.GetFunctionReturnType(node.position,node.ID);
+                ArrayList<Type> para=global_scope.GetFunctionParameters(node.position,node.ID);
+                current_type=new Type(node.ID,return_type_,para);
             }
             else current_type=new Type(scope.GetType(node.position,true,node.ID));
         }
+        node.type=new Type(current_type);
     }
 
     @Override
