@@ -99,7 +99,7 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(FunctionDefNode node){
-        Type return_type=null;
+        Type return_type;
         if(node.return_type.is_void) return_type=new Type(Type.TYPE.VOID,0,false);
         else{
             node.return_type.variable_type.accept(this);
@@ -107,8 +107,8 @@ public class SymbolCollector implements ASTVisitor {
         }
         Scope function_scope=new Scope(scope);
         scope=function_scope;
-        scope=scope.parent_scope;
         node.parameter_def.accept(this);
+        scope=scope.parent_scope;
         ((GlobalScope)scope).DefineFunction(node.position,node.name,function_scope,return_type,parameters);
     }
 
