@@ -11,14 +11,6 @@ public class Locate {
         column=c;
     }
 
-    public int Row(){
-        return row;
-    }
-
-    public int Column(){
-        return column;
-    }
-
     public String ToString(){
         return row+","+column;
     }
