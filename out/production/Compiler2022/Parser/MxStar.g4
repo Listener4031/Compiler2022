@@ -50,7 +50,7 @@ statement: statementBlock
 globalvariableDefStatement: variableDef ';';
 variableDefStatement: variableDef ';';
 
-lambdaStatement: '[&]' '(' functionParameterDef ')' '->' statementBlock expressionList;
+lambdaStatement: '['('&')?']' '(' functionParameterDef ')' '->' statementBlock expressionList;
 
 atomExpr: This
         | Null

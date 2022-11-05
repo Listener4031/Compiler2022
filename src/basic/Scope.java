@@ -6,20 +6,15 @@ import java.util.HashMap;
 
 public class Scope {
     public HashMap<String,Type> members;
-    public HashMap<String,Integer> IDs;
     public Scope parent_scope=null;
-    Integer count_member=0;
 
     public Scope(){
         members=new HashMap<>();
-        IDs=new HashMap<>();
     }
 
     public Scope(Scope _parent){
         members=new HashMap<>();
-        IDs=new HashMap<>();
         parent_scope=_parent;
-        count_member=0;
     }
 
     public boolean IsDefined(boolean is_forward,String name){//consider forward reference
@@ -31,7 +26,6 @@ public class Scope {
     public void DefineVariable(Locate l,String name,Type t){//try to define a new variable
         if(members.containsKey(name)) throw new SemanticError(l,"redefined variable "+name);
         members.put(name,t);
-        IDs.put(name,count_member++);
     }
 
     public Type GetType(Locate l,boolean is_forward,String name){
