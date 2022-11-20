@@ -64,24 +64,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(ExpressionListNode node){}
 
     @Override
-    public void visit(ArrayExpressionNode node){
-        node.identifier.accept(this);
-        //register arrayReg = (register) returnEntity ;
-        //register array = new register(curFunction.curRegisterID ++, ((IRPointerType)arrayReg.type).type) ;
-        //currentBlock.push_back(new load(array.type, arrayReg, array)) ;
-        node.index.accept(this);
-        //entity arrayInd = returnEntity ;
-        //if (returnEntity.isLvalue) {
-        //    arrayInd = new register(curFunction.curRegisterID ++, new IRIntType(32)) ;
-        //    currentBlock.push_back(new load(new IRIntType(32), returnEntity, arrayInd));
-        //}
-        //register returnRegPointer = new register (curFunction.curRegisterID ++, array.type) ;
-        //returnRegPointer.isLvalue = true ;
-        //getelementptr cur = new getelementptr(array, returnRegPointer) ;
-        //cur.value.add(arrayInd) ;
-        //currentBlock.push_back(cur) ;
-        //returnEntity = returnRegPointer ;
-    }
+    public void visit(ArrayExpressionNode node){}
 
     @Override
     public void visit(BinaryExpressionNode node){}
