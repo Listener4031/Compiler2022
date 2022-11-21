@@ -36,6 +36,7 @@ public class Main {
         }
         catch (Error error){
             System.err.println(error.toString());
+            throw new RuntimeException();
         }
     }
 }

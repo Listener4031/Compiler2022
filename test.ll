@@ -3,11 +3,47 @@ source_filename = "test.c"
 target datalayout = "e-m:o-i64:64-i128:128-n32:64-S128"
 target triple = "arm64-apple-macosx11.0.0"
 
+@c = global i32 5, align 4
+
+; Function Attrs: noinline nounwind optnone ssp uwtable
+define i32 @func(i32 %0, i32 %1) #0 {
+  %3 = alloca i32, align 4
+  %4 = alloca i32, align 4
+  %5 = alloca i32, align 4
+  store i32 %0, i32* %4, align 4
+  store i32 %1, i32* %5, align 4
+  %6 = load i32, i32* %4, align 4
+  %7 = load i32, i32* %5, align 4
+  %8 = icmp sgt i32 %6, %7
+  br i1 %8, label %9, label %10
+
+9:                                                ; preds = %2
+  store i32 1, i32* %3, align 4
+  br label %11
+
+10:                                               ; preds = %2
+  store i32 0, i32* %3, align 4
+  br label %11
+
+11:                                               ; preds = %10, %9
+  %12 = load i32, i32* %3, align 4
+  ret i32 %12
+}
+
 ; Function Attrs: noinline nounwind optnone ssp uwtable
 define i32 @main() #0 {
   %1 = alloca i32, align 4
+  %2 = alloca i32, align 4
+  %3 = alloca i32, align 4
   store i32 0, i32* %1, align 4
-  ret i32 0
+  store i32 10, i32* %2, align 4
+  store i32 6, i32* %3, align 4
+  %4 = load i32, i32* %2, align 4
+  %5 = load i32, i32* %3, align 4
+  %6 = add nsw i32 %4, %5
+  %7 = load i32, i32* @c, align 4
+  %8 = call i32 @func(i32 %6, i32 %7)
+  ret i32 %8
 }
 
 attributes #0 = { noinline nounwind optnone ssp uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="non-leaf" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="true" "probe-stack"="__chkstk_darwin" "stack-protector-buffer-size"="8" "target-cpu"="apple-a12" "target-features"="+aes,+crc,+crypto,+fp-armv8,+fullfp16,+lse,+neon,+ras,+rcpc,+rdm,+sha2,+v8.3a,+zcm,+zcz" "unsafe-fp-math"="false" "use-soft-float"="false" }
