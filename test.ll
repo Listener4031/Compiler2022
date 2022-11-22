@@ -3,7 +3,7 @@ source_filename = "test.c"
 target datalayout = "e-m:o-i64:64-i128:128-n32:64-S128"
 target triple = "arm64-apple-macosx11.0.0"
 
-@c = global i32 5, align 4
+@c = common global i32 0, align 4
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable
 define i32 @func(i32 %0, i32 %1) #0 {
@@ -31,6 +31,16 @@ define i32 @func(i32 %0, i32 %1) #0 {
 }
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable
+define void @func1(i32 %0) #0 {
+  %2 = alloca i32, align 4
+  store i32 %0, i32* %2, align 4
+  %3 = load i32, i32* %2, align 4
+  %4 = add nsw i32 %3, 1
+  store i32 %4, i32* %2, align 4
+  ret void
+}
+
+; Function Attrs: noinline nounwind optnone ssp uwtable
 define i32 @main() #0 {
   %1 = alloca i32, align 4
   %2 = alloca i32, align 4
@@ -38,6 +48,7 @@ define i32 @main() #0 {
   store i32 0, i32* %1, align 4
   store i32 10, i32* %2, align 4
   store i32 6, i32* %3, align 4
+  store i32 7, i32* @c, align 4
   %4 = load i32, i32* %2, align 4
   %5 = load i32, i32* %3, align 4
   %6 = add nsw i32 %4, %5

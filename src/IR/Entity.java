@@ -2,7 +2,7 @@ package IR;
 
 import basic.IRtypes.IRType;
 
-public class Entity {
+public abstract class Entity {
     public IRType type_;
     public boolean assignable_;
 
