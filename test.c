@@ -1,4 +1,5 @@
 int c;
+int c1 = 7;
 
 int func(int a, int b){
     if(a > b) return 1;

@@ -1,8 +1,18 @@
 package backend;
 
 import AST.*;
+import IR.GlobalDefinition;
+import basic.GlobalScope;
+import basic.Scope;
 
 public class IRBuilder implements ASTVisitor {
+    private Scope scope_;
+    private GlobalScope global_scope_;
+    private GlobalDefinition global_definition_;
+
+    public IRBuilder(GlobalDefinition _global_def, GlobalScope _global_scope){
+    }
+
     @Override
     public void visit(ProgramNode node){}
 
@@ -13,10 +23,23 @@ public class IRBuilder implements ASTVisitor {
     public void visit(FunctionDefNode node){}
 
     @Override
-    public void visit(StatementBlockNode node){}
+    public void visit(StatementBlockNode node){
+        node.statements.forEach(it -> it.accept(this));
+    }
 
     @Override
-    public void visit(StatementNode node){}
+    public void visit(StatementNode node){
+        if(node.statement_block != null){
+            scope_ = new Scope(scope_);
+            node.statement_block.accept(this);
+            scope_ = scope_.parent_scope;
+        }
+        if(node.variable_def != null) node.variable_def.accept(this);
+        if(node.if_statement != null) node.if_statement.accept(this);
+        if(node.loop_statement != null) node.loop_statement.accept(this);
+        if(node.control_statement != null) node.control_statement.accept(this);
+        if(node.expression != null) node.expression.accept(this);
+    }
 
     @Override
     public void visit(VariableDefNode node){}

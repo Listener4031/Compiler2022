@@ -3,6 +3,7 @@ source_filename = "test.c"
 target datalayout = "e-m:o-i64:64-i128:128-n32:64-S128"
 target triple = "arm64-apple-macosx11.0.0"
 
+@c1 = global i32 7, align 4
 @c = common global i32 0, align 4
 
 ; Function Attrs: noinline nounwind optnone ssp uwtable

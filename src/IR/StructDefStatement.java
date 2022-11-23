@@ -17,6 +17,7 @@ public class StructDefStatement extends Statement{
         for(int i = 0;i <= this.type_.types_.size() - 2; i++){
             IRType tmp_type = this.type_.types_.get(i);
             s = (new StringBuilder()).append(s).append(new String(tmp_type + ", ")).toString();
+            //s = s + this.type_.types_.get(i) + ", ";
         }
         if(this.type_.types_.isEmpty()) return  s + " }";
         else{
