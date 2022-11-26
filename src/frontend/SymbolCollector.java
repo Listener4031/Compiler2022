@@ -37,56 +37,56 @@ public class SymbolCollector implements ASTVisitor {
             }
         });
 
-        //void print(string str); --function
+        // void print(string str); --function
         ArrayList<Type> parameters_=new ArrayList<>();
         Type t=new Type(Type.TYPE.STRING,0,true);//参数类型
         parameters_.add(t);
         t=new Type(Type.TYPE.VOID,0,false);
         global_scope.DefineFunction(node.position,"print",new Scope(),t,parameters_);
-        //void println(string str);
+        // void println(string str);
         global_scope.DefineFunction(node.position,"println",new Scope(),t,parameters_);
-        //void printInt(int n);
+        // void printInt(int n);
         t=new Type(Type.TYPE.INT,0,true);
         parameters_=new ArrayList<>();
         parameters_.add(t);
         t=new Type(Type.TYPE.VOID,0,false);
         global_scope.DefineFunction(node.position,"printInt",new Scope(),t,parameters_);
-        //void printlnInt(int n);
+        // void printlnInt(int n);
         global_scope.DefineFunction(node.position,"printlnInt",new Scope(),t,parameters_);
-        //string getString();
+        // string getString();
         t=new Type(Type.TYPE.STRING,0,false);
         global_scope.DefineFunction(node.position,"getString",new Scope(),t,new ArrayList<>());
-        //int getInt();
+        // int getInt();
         t=new Type(Type.TYPE.INT,0,false);
         global_scope.DefineFunction(node.position,"getInt",new Scope(),t,new ArrayList<>());
-        //string toString(int i);
+        // string toString(int i);
         t.assignable=true;
         parameters_=new ArrayList<>();
         parameters_.add(t);
         t=new Type(Type.TYPE.STRING,0,false);
         global_scope.DefineFunction(node.position,"toString",new Scope(),t,parameters_);
-        //_array
+        // _array
         GlobalScope new_global_scope=new GlobalScope(scope,"_array");
         ((GlobalScope)scope).DefineClass(node.position,"_array",new_global_scope);
-        //array.size()
+        // array.size()
         t=new Type(Type.TYPE.INT,0,false);
         new_global_scope.DefineFunction(node.position,"size",new Scope(),t,new ArrayList<>());
-        //string
+        // string
         new_global_scope=new GlobalScope(scope,"string");
         ((GlobalScope)scope).DefineClass(node.position,"string",new_global_scope);
-        //int str.length();
+        // int str.length();
         new_global_scope.DefineFunction(node.position,"length",new Scope(),t,new ArrayList<>());
-        //string str.substring(int left,int right);
+        // string str.substring(int left,int right);
         t=new Type(Type.TYPE.INT,0,true);
         parameters_=new ArrayList<>();
         parameters_.add(t);
         parameters_.add(t);
         t=new Type(Type.TYPE.STRING,0,false);
         new_global_scope.DefineFunction(node.position,"substring",new Scope(),t,parameters_);
-        //int str.parseInt();
+        // int str.parseInt();
         t=new Type(Type.TYPE.INT,0,false);
         new_global_scope.DefineFunction(node.position,"parseInt",new Scope(),t,new ArrayList<>());
-        //int str.ord(int pos);
+        // int str.ord(int pos);
         t.assignable=true;
         parameters_=new ArrayList<>();
         parameters_.add(t);

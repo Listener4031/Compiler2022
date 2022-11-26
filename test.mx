@@ -1,6 +1,7 @@
+int global1;
 
 int main(){
-    int d = [&]() -> { return 10; }();
-    return d;
+    int a;
+    return 0;	
 }
-//locate [&] count_member
+
