@@ -16,6 +16,10 @@ public class Block {
         _out.println(this.identifier_ + ":");
         this.statements_.forEach(it -> _out.println("  " + it));
     }
+
+    public void Add(Statement _statement){
+        this.statements_.add(_statement);
+    }
 }
 
 

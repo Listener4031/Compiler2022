@@ -9,6 +9,7 @@ import basic.Scope;
 import basic.types.Type;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class IRBuilder implements ASTVisitor {
     private Scope scope_;
@@ -16,6 +17,16 @@ public class IRBuilder implements ASTVisitor {
     public GlobalDefinition global_definition_;
     public boolean is_global_def, is_class_def;
     public IRClassType current_class_type;
+    public Block current_block_, pre_block_;
+    public Function current_function_, pre_function_;
+    public FunctCallStatement current_function_call;
+    public ArrayList<IRType> current_parameters_;
+    public Register current_class_;
+    public Entity current_entity_;
+    public Type return_type_;
+    public boolean is_returned;
+    public String current_function_name;
+    //public Stack<Label>
 
     public IRBuilder(GlobalDefinition _global_definition, GlobalScope _global_scope){
         this.global_scope_ = _global_scope;
@@ -187,7 +198,79 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(FunctionDefNode node){
-        throw new RuntimeException();
+        Function new_function;
+        if(this.is_class_def) new_function = new Function("class " + current_class_type.name_ + "_" + node.name);
+        else new_function = new Function(node.name);
+        if(node.return_type.is_void) new_function.return_type_ = new IRVoidType();
+        else new_function.return_type_ = TypeConverse(node.return_type.variable_type.type);
+        this.current_block_ = new_function.entry_block;
+        this.current_function_ = new_function;
+        this.global_definition_.functions_.add(new_function);
+        // loop
+        this.scope_ = this.global_scope_.GetFunctionScope(node.position, node.name);
+        if(new_function.identifier_.equals("main")){
+            FunctCallStatement new_function_call = new FunctCallStatement("_init");
+            this.current_block_.Add(new_function_call);
+        }
+        if(is_class_def){
+            throw new RuntimeException();
+        }
+        node.parameter_def.accept(this);
+        for(int i = 0; i < this.current_function_.parameters_.size(); i++){
+            Register it = this.current_function_.parameters_.get(i);
+            IRPointerType new_IRPointerType = new IRPointerType(it.type_);
+            Register tmp_register = new Register(new_IRPointerType, this.current_function_.current_register_id);
+            this.current_function_.current_register_id++;
+            tmp_register.assignable_ = true;
+            AllocateStatement new_allocation = new AllocateStatement(tmp_register, it.type_);
+            this.current_function_.allocations_.add(new_allocation);
+            StoreStatement new_store = new StoreStatement(tmp_register.type_, it, tmp_register);
+            this.current_block_.Add(new_store);
+            this.scope_.entities_.put(this.current_function_.parameterIDs_.get(i), tmp_register);
+            if(this.is_class_def && i == 0){
+                throw new RuntimeException();
+            }
+        }
+        IRPointerType new_IRPointerType = new IRPointerType(this.current_function_.return_type_);
+        Register return_register = new Register(new_IRPointerType, this.current_function_.current_register_id);
+        this.current_function_.current_register_id++;
+        this.current_function_.return_register_ = return_register;
+        if(!(this.current_function_.return_type_ instanceof IRVoidType)){
+            AllocateStatement new_allocation = new AllocateStatement(return_register, this.current_function_.return_type_);
+            this.current_function_.allocations_.add(new_allocation);
+            if(this.current_function_.identifier_.equals("main")){
+                IRIntType new_IRIntType = new IRIntType(32);
+                Constant new_constant = new Constant(new_IRIntType, 0);
+                StoreStatement new_store = new StoreStatement(this.current_function_.return_type_, new_constant, return_register);
+                this.current_block_.Add(new_store);
+            }
+        }
+        node.statement_block.accept(this);
+        Label new_label = new Label(this.current_function_.return_block.identifier_);
+        BranchStatement new_branch = new BranchStatement(new_label);
+        this.current_block_.Add(new_branch);
+        this.current_function_.blocks_.add(this.current_function_.return_block);
+        this.current_block_ = this.current_function_.return_block;
+        if(this.current_function_.return_type_ instanceof IRVoidType){
+            Register new_register = new Register(new IRVoidType(), 0);
+            ReturnStatement new_return = new ReturnStatement(new_register);
+            this.current_block_.Add(new_return);
+        }
+        else{
+            Register new_register = new Register(this.current_function_.return_type_, this.current_function_.current_register_id);
+            this.current_function_.current_register_id++;
+            LoadStatement new_load = new LoadStatement(new_register.type_, this.current_function_.return_register_, new_register);
+            this.current_block_.Add(new_load);
+            ReturnStatement new_return = new ReturnStatement(new_register);
+            this.current_block_.Add(new_return);
+        }
+        this.current_block_ = this.current_function_.allocate_block;
+        for(AllocateStatement it : this.current_function_.allocations_) this.current_block_.Add(it);
+        this.current_block_.Add(new BranchStatement(new Label(this.current_function_.entry_block.identifier_)));
+        this.scope_ = this.scope_.parent_scope;
+        this.current_function_ = null;
+        this.current_block_ = null;
+        this.current_class_ = null;
     }
 
     @Override
@@ -231,6 +314,15 @@ public class IRBuilder implements ASTVisitor {
                     Constant new_c = new Constant(((IRPointerType) new_reg.type_).type_, 0);
                     GlobalDefStatement new_statement = new GlobalDefStatement(new_reg, new_c);
                     this.global_definition_.global_def_statements.add(new_statement);
+                }
+            }
+            else if(this.current_function_ != null){
+                Register new_register = new Register(new IRPointerType(tmp_IRType), this.current_function_.current_register_id++);
+                new_register.assignable_ = true;
+                this.scope_.entities_.put(it.name, new_register);
+                this.current_function_.allocations_.add(new AllocateStatement(new_register, tmp_IRType));
+                if(it.initialized){
+                    throw new RuntimeException();
                 }
             }
         });
@@ -308,10 +400,19 @@ public class IRBuilder implements ASTVisitor {
     public void visit(AtomExpressionNode node){}
 
     @Override
-    public void visit(ParameterNode node){}
+    public void visit(ParameterNode node){
+        IRType cur_IRType = TypeConverse(node.type_.type);
+        Register cur_parameter = new Register(cur_IRType, this.current_function_.current_register_id);
+        this.current_function_.current_register_id++;
+        this.current_function_.parameterIDs_.add(node.name);
+        this.current_entity_ = cur_parameter;
+        this.current_function_.parameters_.add((Register) this.current_entity_);
+    }
 
     @Override
-    public void visit(FunctionParameterDefNode node){}
+    public void visit(FunctionParameterDefNode node){
+        node.parameters.forEach(it -> it.accept(this));
+    }
 
     @Override
     public void visit(BasicTypeNode node){}

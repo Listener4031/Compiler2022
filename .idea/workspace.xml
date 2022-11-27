@@ -6,13 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="9347c0ff-7e32-4528-a792-2599d8708371" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm_test.ll" beforeDir="false" afterPath="$PROJECT_DIR$/llvm_test.ll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/IR/Block.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IR/Block.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/IR/Function.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IR/Function.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/IR/Register.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IR/Register.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/backend/IRBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/backend/IRBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/basic/GlobalScope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/GlobalScope.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/basic/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/Scope.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/frontend/SymbolCollector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/frontend/SymbolCollector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.mx" beforeDir="false" afterPath="$PROJECT_DIR$/test.mx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test1.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +92,7 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>175</line>
+          <line>186</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
@@ -100,33 +100,33 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>183</line>
+          <line>194</line>
           <option name="timeStamp" value="229" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>213</line>
-          <option name="timeStamp" value="230" />
+          <line>310</line>
+          <option name="timeStamp" value="236" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Main.java</url>
+          <line>37</line>
+          <option name="timeStamp" value="238" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>222</line>
-          <option name="timeStamp" value="234" />
+          <line>215</line>
+          <option name="timeStamp" value="243" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
           <line>230</line>
-          <option name="timeStamp" value="235" />
+          <option name="timeStamp" value="244" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>227</line>
-          <option name="timeStamp" value="236" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>189</line>
-          <option name="timeStamp" value="237" />
+          <line>324</line>
+          <option name="timeStamp" value="247" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

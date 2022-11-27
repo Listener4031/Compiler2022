@@ -1,5 +1,6 @@
 package basic;
 
+import basic.IRtypes.IRType;
 import basic.Scope;
 import basic.error.SemanticError;
 import basic.types.Type;
@@ -12,6 +13,7 @@ public class GlobalScope extends Scope {
     public HashMap<String,Scope> FunctionScope;//function name to its scope
     public HashMap<String,Type> FunctionReturnType;//function name to its return type
     public HashMap<String,ArrayList<Type>> FunctionParameters;//function name to its parameter list
+    public HashMap<String, IRType> class_types_;
 
     public GlobalScope(){
         ID="Global";
@@ -19,6 +21,7 @@ public class GlobalScope extends Scope {
         FunctionParameters=new HashMap<>();
         FunctionScope=new HashMap<>();
         FunctionReturnType=new HashMap<>();
+        this.class_types_ = new HashMap<>();
     }
 
     public GlobalScope(Scope s,String id){
@@ -28,6 +31,7 @@ public class GlobalScope extends Scope {
         FunctionParameters=new HashMap<>();
         FunctionScope=new HashMap<>();
         FunctionReturnType=new HashMap<>();
+        this.class_types_ = new HashMap<>();
     }
 
     public void DefineClass(Locate l,String name,GlobalScope s){
@@ -92,4 +96,9 @@ public class GlobalScope extends Scope {
         return FunctionReturnType.containsKey(s);
     }
 
+    public IRType GetIRType(String _name){
+        if(this.class_types_.containsKey(_name)) return this.class_types_.get(_name);
+        else if(this.parent_scope != null) return ((GlobalScope) this.parent_scope).GetIRType(_name);
+        else return null;
+    }
 }

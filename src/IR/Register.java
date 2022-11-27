@@ -14,13 +14,13 @@ public class Register extends Entity{
 
     public Register(IRType _type, int _identifier){
         super(_type);
-        this.identifier_ = new String("reg_" + Integer.toString(_identifier));
+        this.identifier_ = Integer.toString(_identifier);
         this.is_global = false;
     }
 
     public Register(IRType _type, String _identifier, boolean _is_global){
         super(_type);
-        this.identifier_ = new String("reg_" + _identifier);
+        this.identifier_ = _identifier;
         this.is_global = _is_global;
     }
 
