@@ -1,6 +1,8 @@
-int global1;
+int global1 = 1;
+
+int global2 = global1 - 1;
 
 int main(){
-    int a;
-    return 0;	
+    int a = 2;
+    return 3;	
 }
