@@ -474,8 +474,21 @@ public class IRBuilder implements ASTVisitor {
     public void visit(BinaryExpressionNode node){
         //throw new RuntimeException();
         if(node.binary_op == BinaryExpressionNode.BINARY_OP.DOT){
-
+            throw new RuntimeException();
         }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.ASSIGN){
+        }
+        /*
+        public enum BINARY_OP{DOT,
+        MULTIPLY,DIVIDE,MOD,
+        PLUS,MINUS,
+        LEFT_SHIFT,RIGHT_SHIFT,
+        LESS,LESS_EQUAL,GREATER,GREATER_EQUAL,
+        EQUAL,NOT_EQUAL,
+        AND,CARET,OR,
+        AND_AND,OR_OR,
+        ASSIGN}
+         */
     }
 
     @Override

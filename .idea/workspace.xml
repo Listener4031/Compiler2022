@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9347c0ff-7e32-4528-a792-2599d8708371" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/llvm_test.ll" beforeDir="false" afterPath="$PROJECT_DIR$/llvm_test.ll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/IR/Register.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/IR/Register.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/backend/IRBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/backend/IRBuilder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/backend/IRBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/backend/IRBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.mx" beforeDir="false" afterPath="$PROJECT_DIR$/test.mx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test1.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test1.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test1.ll" beforeDir="false" afterPath="$PROJECT_DIR$/test1.ll" afterDir="false" />
     </list>
@@ -147,7 +143,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>485</line>
+          <line>499</line>
           <option name="timeStamp" value="281" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -162,17 +158,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>490</line>
+          <line>504</line>
           <option name="timeStamp" value="284" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>495</line>
+          <line>509</line>
           <option name="timeStamp" value="285" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>500</line>
+          <line>514</line>
           <option name="timeStamp" value="287" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -182,18 +178,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>513</line>
+          <line>527</line>
           <option name="timeStamp" value="292" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>517</line>
+          <line>531</line>
           <option name="timeStamp" value="294" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>520</line>
+          <line>534</line>
           <option name="timeStamp" value="295" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
+          <line>476</line>
+          <option name="timeStamp" value="307" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
