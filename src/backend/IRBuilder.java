@@ -255,9 +255,6 @@ public class IRBuilder implements ASTVisitor {
             StoreStatement new_store = new StoreStatement(tmp_register.type_, it, tmp_register);
             this.current_block_.Add(new_store);
             this.scope_.entities_.put(this.current_function_.parameterIDs_.get(i), tmp_register);
-            if(this.is_class_def && i == 0){
-                throw new RuntimeException();
-            }
         }
         IRPointerType new_IRPointerType = new IRPointerType(this.current_function_.return_type_);
         Register return_register = new Register(new_IRPointerType, this.current_function_.current_register_id++);
@@ -399,11 +396,11 @@ public class IRBuilder implements ASTVisitor {
             this.current_entity_ = new_register;
         }
         if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
-        Label true_label = new Label((this.current_function_.current_register_id - 1) + "_true");
+        Label true_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_true");
         Block true_block = new Block(true_label.identifier_);
-        Label false_label = new Label((this.current_function_.current_register_id - 1) + "_false");
+        Label false_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_false");
         Block false_block = new Block(false_label.identifier_);
-        Label out_label = new Label((this.current_function_.current_register_id - 1) + "_out");
+        Label out_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_out");
         Block out_block = new Block(out_label.identifier_);
         if(node.false_statement == null){
             this.current_block_.Add(new BranchStatement(this.current_entity_, true_label, out_label));
@@ -435,7 +432,53 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ForStatementNode node){
-        throw new RuntimeException();
+        this.scope_ = new Scope(this.scope_);
+        if(node.init_statement != null) node.init_statement.accept(this);
+        Label condition_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_condition");
+        Block condition_block = new Block(condition_label.identifier_);
+        Label stepping_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_stepping");
+        Block stepping_block = new Block(stepping_label.identifier_);
+        Label body_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_body");
+        Block body_block = new Block(body_label.identifier_);
+        Label out_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_out");
+        Block out_block = new Block(out_label.identifier_);
+        this.stepping_labels_.add(stepping_label);
+        this.condition_labels_.add(condition_label);
+        this.breakout_labels_.add(out_label);
+        if(node.for_condition != null){
+            this.current_block_.Add(new BranchStatement(condition_label));
+            this.current_block_ = condition_block;
+            node.for_condition.accept(this);
+            if(this.current_entity_.assignable_){
+                Register new_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(new_register.type_, this.current_entity_, new_register));
+                this.current_entity_ = new_register;
+            }
+            this.current_block_.Add(new BranchStatement(this.current_entity_, body_label, out_label));
+            this.current_function_.blocks_.add(condition_block);
+        }
+        else current_block_.Add(new BranchStatement(body_label));
+        this.current_block_ = body_block;
+        this.current_function_.blocks_.add(this.current_block_);
+        node.statement.accept(this);
+        if(node.step_statement != null){
+            this.current_block_.Add(new BranchStatement(stepping_label));
+            this.current_block_ = stepping_block;
+            node.step_statement.accept(this);
+            if(node.for_condition != null) this.current_block_.Add(new BranchStatement(condition_label));
+            else this.current_block_.Add(new BranchStatement(body_label));
+            this.current_function_.blocks_.add(stepping_block);
+        }
+        else{
+            if(node.for_condition != null) this.current_block_.Add(new BranchStatement(condition_label));
+            else this.current_block_.Add(new BranchStatement(body_label));
+        }
+        this.stepping_labels_.pop();
+        this.condition_labels_.pop();
+        this.breakout_labels_.pop();
+        this.current_block_ = out_block;
+        this.current_function_.blocks_.add(this.current_block_);
+        this.scope_ = this.scope_.parent_scope;
     }
 
     @Override
@@ -446,7 +489,8 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ForConditionNode node){
-        throw new RuntimeException();
+        node.condition.accept(this);
+        if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
     }
 
     @Override
@@ -456,12 +500,38 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(WhileStatementNode node){
-        throw new RuntimeException();
+        Label condition_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_condition");
+        Block condition_block = new Block(condition_label.identifier_);
+        this.current_block_.Add(new BranchStatement(condition_label));
+        this.current_block_ = condition_block;
+        node.condition.accept(this);
+        if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
+        Label body_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_body");
+        Block body_block = new Block(body_label.identifier_);
+        Label out_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_out");
+        Block out_block = new Block(out_label.identifier_);
+        this.current_block_.Add(new BranchStatement(this.current_entity_, body_label, out_label));
+        this.current_function_.blocks_.add(condition_block);
+        Label stepping_label = new Label(this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + "_stepping");
+        this.stepping_labels_.add(stepping_label);
+        this.condition_labels_.add(condition_label);
+        this.breakout_labels_.add(out_label);
+        this.current_block_ = body_block;
+        this.scope_ = new Scope(this.scope_);
+        node.statement.accept(this);
+        this.scope_ = this.scope_.parent_scope;
+        this.current_block_.Add(new BranchStatement(condition_label));
+        this.current_function_.blocks_.add(body_block);
+        this.stepping_labels_.pop();
+        this.condition_labels_.pop();
+        this.breakout_labels_.pop();
+        this.current_block_ = out_block;
+        this.current_function_.blocks_.add(this.current_block_);
     }
 
     @Override
     public void visit(BreakStatementNode node){
-        throw new RuntimeException();
+        this.current_block_.Add(new BranchStatement(this.breakout_labels_.peek()));
     }
 
     @Override
@@ -486,7 +556,27 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ClassDefNode node){
-        throw new RuntimeException();
+        this.is_class_def = true;
+        this.scope_ = ((GlobalScope) this.scope_).GetClassScope(node.position, node.name);
+        this.global_scope_ = (GlobalScope) this.scope_;
+        this.current_class_type = new IRClassType(node.name);
+        node.variables.forEach(it -> it.accept(this));
+        if(node.constructor != null) node.constructor.accept(this);
+        else{
+            this.current_function_ = new Function(node.name);
+            this.current_function_.return_type_ = new IRVoidType();
+            this.current_block_ = this.current_function_.entry_block;
+            Register new_register = new Register(new IRPointerType(this.current_class_type), this.current_function_.current_register_id++);
+            this.current_function_.parameters_.add(new_register);
+            this.current_function_.parameterIDs_.add("class_" + node.name);
+        }
+        node.functions.forEach(it -> it.accept(this));
+        this.global_definition_.global_def_statements.add(new StructDefStatement(this.current_class_type));
+        this.global_scope_ = (GlobalScope) this.global_scope_.parent_scope;
+        this.scope_ = this.scope_.parent_scope;
+        this.global_scope_.class_types_.put(node.name, this.current_class_type);
+        this.current_class_type = null;
+        this.is_class_def = false;
     }
 
     @Override
@@ -511,7 +601,6 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(BinaryExpressionNode node){
-        //throw new RuntimeException();
         /*
             BinaryStatement.IR_BINARY_OP cur_op;
             if(node.binary_op == BinaryExpressionNode.BINARY_OP.MULTIPLY) cur_op = BinaryStatement.IR_BINARY_OP.mul;
@@ -729,7 +818,17 @@ public class IRBuilder implements ASTVisitor {
             //
         }
         else{ // ASSIGN
-            throw new RuntimeException();
+            node.left_expression.accept(this);
+            Entity left_entity = this.current_entity_;
+            node.right_expression.accept(this);
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(right_entity.type_, this.current_entity_, right_entity));
+            }
+            if(right_entity instanceof Register) TypeConverse((Register) right_entity, ((IRPointerType) left_entity.type_).type_);
+            this.current_block_.Add(new StoreStatement(((IRPointerType) left_entity.type_).type_, this.current_entity_, left_entity));
+            this.current_entity_ = right_entity;
         }
         /*
         public enum BINARY_OP{DOT,
@@ -784,7 +883,6 @@ public class IRBuilder implements ASTVisitor {
                 throw new RuntimeException();
             }
             else{
-                //throw new RuntimeException();
                 if(this.current_class_ == null) this.current_entity_ = this.scope_.GetEntity(true, node.ID);
                 else{
                     throw new RuntimeException();

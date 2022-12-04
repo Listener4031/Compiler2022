@@ -1,6 +1,11 @@
+class A{
+    int a;
+    A(){
+        this.a = 3;
+    }
+};
+
 int main(){
-    int a = 2;
-    
     return 3;	
 }
 

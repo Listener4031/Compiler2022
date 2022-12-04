@@ -129,8 +129,8 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode>{
 
     @Override public ASTNode visitForInit(MxStarParser.ForInitContext ctx) {
         Locate l=new Locate(ctx);
-        if(ctx.variableDef()==null) return new ForInitNode(l,null,(ExpressionNode) visit(ctx.expression()));
-        else return new ForInitNode(l,(VariableDefNode) visit(ctx.variableDef()),(ExpressionNode) visit(ctx.expression()));
+        if(ctx.variableDef() == null) return new ForInitNode(l, null, (ExpressionNode) visit(ctx.expression()));
+        else return new ForInitNode(l, (VariableDefNode) visit(ctx.variableDef()), null);
     }
 
     @Override public ASTNode visitForCondition(MxStarParser.ForConditionContext ctx) {

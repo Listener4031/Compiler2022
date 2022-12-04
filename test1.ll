@@ -9,21 +9,20 @@ define i32 @main() #0 {
   %2 = alloca i32, align 4
   store i32 0, i32* %1, align 4
   store i32 2, i32* %2, align 4
-  %3 = load i32, i32* %2, align 4
-  %4 = icmp sgt i32 %3, 3
-  br i1 %4, label %5, label %6
+  br label %3
 
-5:                                                ; preds = %0
-  store i32 3, i32* %2, align 4
-  br label %9
+3:                                                ; preds = %6, %0
+  %4 = load i32, i32* %2, align 4
+  %5 = icmp slt i32 %4, 10
+  br i1 %5, label %6, label %9
 
-6:                                                ; preds = %0
+6:                                                ; preds = %3
   %7 = load i32, i32* %2, align 4
-  %8 = sub nsw i32 %7, 1
+  %8 = add nsw i32 %7, 1
   store i32 %8, i32* %2, align 4
-  br label %9
+  br label %3
 
-9:                                                ; preds = %6, %5
+9:                                                ; preds = %3
   ret i32 3
 }
 

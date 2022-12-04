@@ -23,31 +23,30 @@ define i32 @main() {
 main_allocate:
   %0 = alloca i32
   %1 = alloca i32
-  %5 = alloca i32
-  %6 = alloca i32
   br label %main_entry
 
 main_entry:
   store i32 0, i32* %0
   store i32 2, i32* %1
+  br label %main_1_condition
+
+main_1_condition:
   %2 = load i32, i32* %1
-  %3 = icmp sgt i1 %2, 3
-  br i1 %4, label %4_true, label %4_false
+  %3 = icmp slt i1 %2, 10
+  br i1 %4, label %main_4_body, label %main_4_out
 
-4_true:
-  store i32 3, i32* %5
-  br label %4_out
+main_4_body:
+  %5 = load i32, i32* %1
+  %6 = add i32 %5, 1
+  store i32 %7, i32* %1
+  br label %main_1_condition
 
-4_false:
-  store i32 4, i32* %6
-  br label %4_out
-
-4_out:
+main_4_out:
   store i32 3, i32* %0
   br label %main_return
   br label %main_return
 
 main_return:
-  %7 = load i32, i32* %0
-  ret i32 %7
+  %8 = load i32, i32* %0
+  ret i32 %8
 }
