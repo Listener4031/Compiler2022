@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class Scope {
     public HashMap<String,Type> members;
-    public Scope parent_scope=null;
+    public Scope parent_scope = null;
     public HashMap<String, Entity> entities_;
     public HashMap<String, Integer> memberIDs_;
     Integer count_member_;

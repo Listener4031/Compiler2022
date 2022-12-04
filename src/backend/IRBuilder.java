@@ -473,10 +473,224 @@ public class IRBuilder implements ASTVisitor {
     @Override
     public void visit(BinaryExpressionNode node){
         //throw new RuntimeException();
+        /*
+            BinaryStatement.IR_BINARY_OP cur_op;
+            if(node.binary_op == BinaryExpressionNode.BINARY_OP.MULTIPLY) cur_op = BinaryStatement.IR_BINARY_OP.mul;
+            else if(node.binary_op == BinaryExpressionNode.BINARY_OP.DIVIDE) cur_op = BinaryStatement.IR_BINARY_OP.sdiv;
+            else cur_op = BinaryStatement.IR_BINARY_OP.srem;
+            node.left_expression.accept(this);
+            Type left_Type = node.left_expression.type;
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(left_entity.type_, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Type right_Type = node.right_expression.type;
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(right_entity.type_, this.current_entity_, right_entity));
+            }
+            Register dest_entity = new Register(, this.current_function_.current_register_id++);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, , left_entity, right_entity, dest_entity);
+            this.current_block_.Add(new_stmt);
+            this.current_entity_ = dest_entity;
+         */
         if(node.binary_op == BinaryExpressionNode.BINARY_OP.DOT){
             throw new RuntimeException();
         }
-        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.ASSIGN){
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.MULTIPLY
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.DIVIDE
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.MOD){ // int
+            BinaryStatement.IR_BINARY_OP cur_op;
+            if(node.binary_op == BinaryExpressionNode.BINARY_OP.MULTIPLY) cur_op = BinaryStatement.IR_BINARY_OP.mul;
+            else if(node.binary_op == BinaryExpressionNode.BINARY_OP.DIVIDE) cur_op = BinaryStatement.IR_BINARY_OP.sdiv;
+            else cur_op = BinaryStatement.IR_BINARY_OP.srem;
+            IRIntType fixed_int_IRType = new IRIntType(32);
+            node.left_expression.accept(this);
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
+            }
+            Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            this.current_block_.Add(new_stmt);
+            this.current_entity_ = dest_entity;
+        }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.PLUS){ // int / string
+            BinaryStatement.IR_BINARY_OP cur_op;
+            cur_op = BinaryStatement.IR_BINARY_OP.add;
+            node.left_expression.accept(this);
+            Type left_Type = node.left_expression.type;
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(left_entity.type_, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Type right_Type = node.right_expression.type;
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(right_entity.type_, this.current_entity_, right_entity));
+            }
+            if(left_Type.type_ == Type.TYPE.INT){
+                IRIntType fixed_int_IRType = new IRIntType(32);
+                Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
+                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+                this.current_block_.Add(new_stmt);
+                this.current_entity_ = dest_entity;
+            }
+            else{ // string
+                throw new RuntimeException();
+            }
+        }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.MINUS){ // int
+            BinaryStatement.IR_BINARY_OP cur_op = BinaryStatement.IR_BINARY_OP.sub;
+            IRIntType fixed_int_IRType = new IRIntType(32);
+            node.left_expression.accept(this);
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
+            }
+            Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            this.current_block_.Add(new_stmt);
+            this.current_entity_ = dest_entity;
+        }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.LEFT_SHIFT
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.RIGHT_SHIFT){ // int
+            BinaryStatement.IR_BINARY_OP cur_op;
+            if(node.binary_op == BinaryExpressionNode.BINARY_OP.LEFT_SHIFT) cur_op = BinaryStatement.IR_BINARY_OP.shl;
+            else cur_op = BinaryStatement.IR_BINARY_OP.ashr;
+            IRIntType fixed_int_IRType = new IRIntType(32);
+            node.left_expression.accept(this);
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
+            }
+            Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            this.current_block_.Add(new_stmt);
+            this.current_entity_ = dest_entity;
+        }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.LESS
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.LESS_EQUAL
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.GREATER
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.GREATER_EQUAL){ // int / string
+            BinaryStatement.IR_BINARY_OP cur_op;
+            if(node.binary_op == BinaryExpressionNode.BINARY_OP.LESS) cur_op = BinaryStatement.IR_BINARY_OP.slt;
+            else if(node.binary_op == BinaryExpressionNode.BINARY_OP.LESS_EQUAL) cur_op = BinaryStatement.IR_BINARY_OP.sle;
+            else if(node.binary_op == BinaryExpressionNode.BINARY_OP.GREATER) cur_op = BinaryStatement.IR_BINARY_OP.sgt;
+            else cur_op = BinaryStatement.IR_BINARY_OP.sge;
+            node.left_expression.accept(this);
+            Type left_Type = node.left_expression.type;
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(left_entity.type_, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Type right_Type = node.right_expression.type;
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(right_entity.type_, this.current_entity_, right_entity));
+            }
+            if(left_Type.type_ == Type.TYPE.INT){
+                IRIntType fixed_bool_IRType = new IRIntType(1);
+                Register dest_entity = new Register(fixed_bool_IRType, this.current_function_.current_register_id++);
+                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_bool_IRType, left_entity, right_entity, dest_entity);
+                this.current_block_.Add(new_stmt);
+                this.current_entity_ = dest_entity;
+            }
+            else{
+                throw new RuntimeException();
+            }
+        }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.EQUAL
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.NOT_EQUAL){ //
+            BinaryStatement.IR_BINARY_OP cur_op;
+            if(node.binary_op == BinaryExpressionNode.BINARY_OP.EQUAL) cur_op = BinaryStatement.IR_BINARY_OP.eq;
+            else cur_op = BinaryStatement.IR_BINARY_OP.ne;
+            node.left_expression.accept(this);
+            Type left_Type = node.left_expression.type;
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(left_entity.type_, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Type right_Type = node.right_expression.type;
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(right_entity.type_, this.current_entity_, right_entity));
+            }
+            if(left_Type.type_ == Type.TYPE.NULL || right_Type.type_ == Type.TYPE.NULL){
+                throw new RuntimeException();
+            }
+            else{
+                IRIntType fixed_bool_IRType = new IRIntType(1);
+                Register dest_entity = new Register(fixed_bool_IRType, this.current_function_.current_register_id++);
+                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_bool_IRType, left_entity, right_entity, dest_entity);
+                this.current_block_.Add(new_stmt);
+                this.current_entity_ = dest_entity;
+            }
+        }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.AND
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.CARET
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.OR){ // int
+            BinaryStatement.IR_BINARY_OP cur_op;
+            if(node.binary_op == BinaryExpressionNode.BINARY_OP.AND) cur_op = BinaryStatement.IR_BINARY_OP.and;
+            else if(node.binary_op == BinaryExpressionNode.BINARY_OP.CARET) cur_op = BinaryStatement.IR_BINARY_OP.xor;
+            else cur_op = BinaryStatement.IR_BINARY_OP.or;
+            IRIntType fixed_int_IRType = new IRIntType(32);
+            node.left_expression.accept(this);
+            Entity left_entity = this.current_entity_;
+            if(left_entity.assignable_){
+                left_entity = new Register(((IRPointerType) left_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, left_entity));
+            }
+            node.right_expression.accept(this);
+            Entity right_entity = this.current_entity_;
+            if(right_entity.assignable_){
+                right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
+                this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
+            }
+            Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            this.current_block_.Add(new_stmt);
+            this.current_entity_ = dest_entity;
+        }
+        else if(node.binary_op == BinaryExpressionNode.BINARY_OP.AND_AND
+                || node.binary_op == BinaryExpressionNode.BINARY_OP.OR_OR){ // bool
+            //
+        }
+        else{ // ASSIGN
+            throw new RuntimeException();
         }
         /*
         public enum BINARY_OP{DOT,
@@ -531,7 +745,11 @@ public class IRBuilder implements ASTVisitor {
                 throw new RuntimeException();
             }
             else{
-                throw new RuntimeException();
+                //throw new RuntimeException();
+                if(this.current_class_ == null) this.current_entity_ = this.scope_.GetEntity(true, node.ID);
+                else{
+                    throw new RuntimeException();
+                }
             }
         }
     }
