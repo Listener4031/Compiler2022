@@ -1,7 +1,7 @@
 package IR;
 
 public class Label {
-    String identifier_;
+    public String identifier_;
 
     public Label(String _identifier){
         this.identifier_ = _identifier;

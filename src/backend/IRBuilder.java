@@ -391,7 +391,46 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(IfStatementNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        node.expression.accept(this);
+        if(this.current_entity_.assignable_){
+            Register new_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+            this.current_block_.Add(new LoadStatement(new_register.type_, this.current_entity_, new_register));
+            this.current_entity_ = new_register;
+        }
+        if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
+        Label true_label = new Label((this.current_function_.current_register_id - 1) + "_true");
+        Block true_block = new Block(true_label.identifier_);
+        Label false_label = new Label((this.current_function_.current_register_id - 1) + "_false");
+        Block false_block = new Block(false_label.identifier_);
+        Label out_label = new Label((this.current_function_.current_register_id - 1) + "_out");
+        Block out_block = new Block(out_label.identifier_);
+        if(node.false_statement == null){
+            this.current_block_.Add(new BranchStatement(this.current_entity_, true_label, out_label));
+            this.current_block_ = true_block;
+            this.scope_ = new Scope(this.scope_);
+            node.true_statement.accept(this);
+            this.current_block_.Add(new BranchStatement(out_label));
+            this.scope_ = this.scope_.parent_scope;
+            this.current_block_ = out_block;
+            this.current_function_.blocks_.add(true_block);
+            this.current_function_.blocks_.add(out_block);
+        }
+        else{
+            this.current_block_.Add(new BranchStatement(this.current_entity_, true_label, false_label));
+            this.current_block_ = true_block;
+            this.scope_ = new Scope(this.scope_);
+            node.true_statement.accept(this);
+            this.current_block_.Add(new BranchStatement(out_label));
+            this.current_block_ = false_block;
+            node.false_statement.accept(this);
+            this.current_block_.Add(new BranchStatement(out_label));
+            this.scope_ = this.scope_.parent_scope;
+            this.current_block_ = out_block;
+            this.current_function_.blocks_.add(true_block);
+            this.current_function_.blocks_.add(false_block);
+            this.current_function_.blocks_.add(out_block);
+        }
     }
 
     @Override
