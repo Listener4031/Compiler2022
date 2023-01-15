@@ -1,7 +1,12 @@
-int main(){
-    int a = 2;
-    while(a < 10){
-        a = a + 1;
+class A{
+public:
+    int a;
+    A(){
+        a = 3;
     }
+};
+
+int main(){
+    A aa;
     return 3;	
 }

@@ -5,7 +5,7 @@ import basic.IRtypes.IRType;
 import java.util.ArrayList;
 
 public class FunctCallStatement extends Statement{
-    public String name_;
+    public String name_, initial_name_;
     public boolean is_void;
     public IRType return_type_;
     public Register register_;
@@ -26,6 +26,7 @@ public class FunctCallStatement extends Statement{
         this.return_type_ = null;
         this.register_ = null;
         this.parameters_ = new ArrayList<>();
+        this.initial_name_ = new String();
     }
 
     public FunctCallStatement(String _name, IRType _type, Register _register){

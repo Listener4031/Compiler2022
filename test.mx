@@ -1,11 +1,9 @@
-class A{
-    int a;
-    A(){
-        this.a = 3;
-    }
-};
+int a = 21;
+int b = 32 + a;
+bool c = true;
+bool d = (b > a);
 
 int main(){
-    return 3;	
+    return 1;
 }
 

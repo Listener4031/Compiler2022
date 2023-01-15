@@ -15,7 +15,7 @@ public class IRBuilder implements ASTVisitor {
     private Scope scope_;
     public GlobalScope global_scope_;
     public GlobalDefinition global_definition_;
-    public boolean is_global_def, is_class_def;
+    public boolean is_global_def, is_class_def, function_call_flag, have_function_flag;
     public IRClassType current_class_type;
     public Block current_block_, global_block_;
     public Function current_function_, global_function_;
@@ -30,7 +30,6 @@ public class IRBuilder implements ASTVisitor {
     public Stack<Label> condition_labels_;
     public Stack<Label> breakout_labels_;
     public int count_loop;
-    public boolean is_function_identifier;
 
     public IRBuilder(GlobalDefinition _global_definition, GlobalScope _global_scope){
         this.global_scope_ = _global_scope;
@@ -38,10 +37,11 @@ public class IRBuilder implements ASTVisitor {
         this.scope_ = _global_scope;
         this.is_global_def = false;
         this.is_class_def = false;
+        this.function_call_flag = false;
+        this.have_function_flag = false;
         this.global_function_ = new Function("_global");
         this.global_function_.return_type_ = new IRVoidType();
-        Label global_func_label = new Label(this.global_function_.entry_block.identifier_);
-        this.global_function_.allocate_block.Add(new BranchStatement(global_func_label));
+        this.global_function_.allocate_block.Add(new BranchStatement(new Label(this.global_function_.entry_block.identifier_)));
         this.global_block_ = this.global_function_.entry_block;
         Init();
         this.global_definition_.functions_.add(this.global_function_);
@@ -109,41 +109,30 @@ public class IRBuilder implements ASTVisitor {
         Function new_function = new Function("print");
         new_function.is_built_in = true;
         new_function.return_type_ = new IRVoidType();
-        IRIntType new_IRIntType = new IRIntType(8);
-        IRPointerType new_IRPointerType = new IRPointerType(new_IRIntType);
-        Register new_reg = new Register(new_IRPointerType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.parameters_.add(new Register(new IRPointerType(new IRIntType(8)), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         //void println(string str);
         new_function = new Function("println");
         new_function.is_built_in = true;
         new_function.return_type_ = new IRVoidType();
-        new_IRIntType = new IRIntType(8);
-        new_IRPointerType = new IRPointerType(new_IRIntType);
-        new_reg = new Register(new_IRPointerType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.parameters_.add(new Register(new IRPointerType(new IRIntType(8)), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         //void printInt(int n);
         new_function = new Function("printInt");
         new_function.is_built_in = true;
         new_function.return_type_ = new IRVoidType();
-        new_IRIntType = new IRIntType(32);
-        new_reg = new Register(new_IRIntType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.parameters_.add(new Register(new IRIntType(32), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         // void printlnInt(int n);
         new_function = new Function("printlnInt");
         new_function.is_built_in = true;
         new_function.return_type_ = new IRVoidType();
-        new_IRIntType = new IRIntType(32);
-        new_reg = new Register(new_IRIntType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.parameters_.add(new Register(new IRIntType(32), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         // string getString();
         new_function = new Function("getString");
         new_function.is_built_in = true;
-        new_IRIntType = new IRIntType(8);
-        new_function.return_type_ = new IRPointerType(new_IRIntType);
+        new_function.return_type_ = new IRPointerType(new IRIntType(8));
         this.global_definition_.functions_.add(new_function);
         // int getInt();
         new_function = new Function("getInt");
@@ -153,11 +142,8 @@ public class IRBuilder implements ASTVisitor {
         // string toString(int i);
         new_function = new Function("toString");
         new_function.is_built_in = true;
-        new_IRIntType = new IRIntType(8);
-        new_function.return_type_ = new IRPointerType(new_IRIntType);
-        new_IRIntType = new IRIntType(32);
-        new_reg = new Register(new_IRIntType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.return_type_ = new IRPointerType(new IRIntType(8));
+        new_function.parameters_.add(new Register(new IRIntType(32), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         // string
         this.global_scope_ = (GlobalScope) this.global_scope_.GetClassScope(new Locate(0, 0), "string");
@@ -165,44 +151,27 @@ public class IRBuilder implements ASTVisitor {
         new_function = new Function("length");
         new_function.is_built_in = true;
         new_function.return_type_ = new IRIntType(32);
-        new_IRIntType = new IRIntType(8);
-        new_IRPointerType = new IRPointerType(new_IRIntType);
-        new_reg = new Register(new_IRPointerType,  new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.parameters_.add(new Register(new IRPointerType(new IRIntType(8)),  new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         // string str.substring(int left,int right);
         new_function = new Function("substring");
         new_function.is_built_in = true;
-        new_IRIntType = new IRIntType(8);
-        new_function.return_type_ = new IRPointerType(new_IRIntType);
-        new_IRIntType = new IRIntType(8);
-        new_IRPointerType = new IRPointerType(new_IRIntType);
-        new_reg = new Register(new_IRPointerType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
-        new_IRIntType = new IRIntType(32);
-        new_reg = new Register(new_IRIntType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
-        new_IRIntType = new IRIntType(32);
-        new_reg = new Register(new_IRIntType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.return_type_ = new IRPointerType(new IRIntType(8));
+        new_function.parameters_.add(new Register(new IRPointerType(new IRIntType(8)), new_function.current_register_id++));
+        new_function.parameters_.add(new Register(new IRIntType(32), new_function.current_register_id++));
+        new_function.parameters_.add(new Register(new IRIntType(32), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         // int str.parseInt();
         new_function = new Function("parseInt");
         new_function.is_built_in = true;
         new_function.return_type_ = new IRIntType(32);
-        new_IRIntType = new IRIntType(8);
-        new_IRPointerType = new IRPointerType(new_IRIntType);
-        new_reg = new Register(new_IRPointerType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.parameters_.add(new Register(new IRPointerType(new IRIntType(8)), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         // int str.ord(int pos);
         new_function = new Function("ord");
         new_function.is_built_in = true;
         new_function.return_type_ = new IRIntType(32);
-        new_IRIntType = new IRIntType(8);
-        new_IRPointerType = new IRPointerType(new_IRIntType);
-        new_reg = new Register(new_IRPointerType, new_function.current_register_id++);
-        new_function.parameters_.add(new_reg);
+        new_function.parameters_.add(new Register(new IRPointerType(new IRIntType(8)), new_function.current_register_id++));
         this.global_definition_.functions_.add(new_function);
         global_scope_ = (GlobalScope) global_scope_.parent_scope;
     }
@@ -255,6 +224,9 @@ public class IRBuilder implements ASTVisitor {
             StoreStatement new_store = new StoreStatement(tmp_register.type_, it, tmp_register);
             this.current_block_.Add(new_store);
             this.scope_.entities_.put(this.current_function_.parameterIDs_.get(i), tmp_register);
+            if(this.is_class_def){
+                throw new RuntimeException();
+            }
         }
         IRPointerType new_IRPointerType = new IRPointerType(this.current_function_.return_type_);
         Register return_register = new Register(new_IRPointerType, this.current_function_.current_register_id++);
@@ -536,7 +508,11 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ContinueStatementNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        if(this.stepping_labels_.peek() != null){
+            this.current_block_.Add(new BranchStatement(this.stepping_labels_.peek()));
+        }
+        else this.current_block_.Add(new BranchStatement(this.condition_labels_.peek()));
     }
 
     @Override
@@ -562,13 +538,26 @@ public class IRBuilder implements ASTVisitor {
         this.current_class_type = new IRClassType(node.name);
         node.variables.forEach(it -> it.accept(this));
         if(node.constructor != null) node.constructor.accept(this);
-        else{
+        else{ // add default constructor
             this.current_function_ = new Function(node.name);
             this.current_function_.return_type_ = new IRVoidType();
-            this.current_block_ = this.current_function_.entry_block;
             Register new_register = new Register(new IRPointerType(this.current_class_type), this.current_function_.current_register_id++);
             this.current_function_.parameters_.add(new_register);
             this.current_function_.parameterIDs_.add("class_" + node.name);
+            Register tmp_register = new Register(new IRPointerType(new_register.type_), this.current_function_.current_register_id++);
+            this.current_function_.allocations_.add(new AllocateStatement(tmp_register, new_register.type_));
+            this.current_block_ = this.current_function_.entry_block;
+            this.current_block_.Add(new StoreStatement(tmp_register.type_, new_register, tmp_register));
+            this.current_block_.Add(new BranchStatement(new Label(this.current_function_.return_block.identifier_)));
+            this.current_block_ = this.current_function_.return_block;
+            this.current_block_.Add(new ReturnStatement(new Register(new IRVoidType(), 0)));
+            this.current_block_ = this.current_function_.allocate_block;
+            for(AllocateStatement it : this.current_function_.allocations_) this.current_block_.Add(it);
+            this.current_block_.Add(new BranchStatement(new Label(this.current_function_.entry_block.identifier_)));
+            this.current_function_.blocks_.add(this.current_function_.return_block);
+            this.global_definition_.functions_.add(this.current_function_);
+            this.current_function_ = null;
+            this.current_block_ = null;
         }
         node.functions.forEach(it -> it.accept(this));
         this.global_definition_.global_def_statements.add(new StructDefStatement(this.current_class_type));
@@ -581,7 +570,37 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ClassConstructorNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        Function class_constructor = new Function(node.name);
+        class_constructor.return_type_ = new IRVoidType();
+        this.current_function_ = class_constructor;
+        this.current_block_ = this.current_function_.entry_block;
+        // Register
+        this.current_function_.parameterIDs_.add("_class_pointer");
+        Register parameter_register = new Register(new IRPointerType(this.current_class_type), this.current_function_.current_register_id++);
+        this.current_function_.parameters_.add(parameter_register);
+        Register tmp_register = new Register(new IRPointerType(parameter_register.type_), this.current_function_.current_register_id++);
+        this.current_function_.allocations_.add(new AllocateStatement(tmp_register, parameter_register.type_));
+        this.current_block_.Add(new StoreStatement(tmp_register.type_, parameter_register, tmp_register));
+        // prepare
+        this.current_function_name = node.name;
+        this.is_returned = false;
+        this.count_loop = 0;
+        this.stepping_labels_ = new Stack<>();
+        this.condition_labels_ = new Stack<>();
+        this.breakout_labels_ = new Stack<>();
+        this.current_class_ = parameter_register;
+        node.statement_block.accept(this);
+        this.current_class_ = null;
+        this.current_block_.Add(new BranchStatement(new Label(this.current_function_.return_block.identifier_)));
+        this.current_block_ = current_function_.return_block;
+        this.current_block_.Add(new ReturnStatement(new Register(new IRVoidType(), 0)));
+        this.current_function_.blocks_.add(this.current_function_.return_block);
+        this.current_block_ = this.current_function_.allocate_block;
+        for(AllocateStatement it : this.current_function_.allocations_){
+            this.current_block_.Add(it);
+        }
+        this.global_definition_.functions_.add(class_constructor);
     }
 
     @Override
@@ -591,12 +610,43 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ExpressionListNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        if(!node.expressions.isEmpty()){
+            int t = this.current_parameters_.size() - node.expressions.size();
+            for(int i = 0; i < node.expressions.size(); i++){
+                node.expressions.get(i).accept(this);
+                if(this.current_entity_.assignable_){
+                    Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                    this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                    this.current_entity_ = tmp_register;
+                }
+                if(this.current_entity_ instanceof Register){
+                    TypeConverse((Register) this.current_entity_, this.current_parameters_.get(i + t));
+                }
+                this.current_function_call.parameters_.add(this.current_entity_);
+            }
+        }
     }
 
     @Override
     public void visit(ArrayExpressionNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        node.identifier.accept(this);
+        Register tmp_register = (Register) this.current_entity_;
+        Register array_register = new Register(((IRPointerType) tmp_register.type_).type_, this.current_function_.current_register_id++);
+        this.current_block_.Add(new LoadStatement(array_register.type_, tmp_register, array_register));
+        node.index.accept(this);
+        Entity tmp_entity = this.current_entity_;
+        if(this.current_entity_.assignable_){
+            tmp_entity = new Register(new IRIntType(32), this.current_function_.current_register_id++);
+            this.current_block_.Add(new LoadStatement(new IRIntType(32), this.current_entity_, tmp_entity));
+        }
+        Register return_register = new Register(array_register.type_, this.current_function_.current_register_id++);
+        return_register.assignable_ = true;
+        GetElementPtr ptr_stmt = new GetElementPtr(array_register, return_register);
+        ptr_stmt.values.add(tmp_entity);
+        this.current_block_.Add(ptr_stmt);
+        this.current_entity_ = return_register;
     }
 
     @Override
@@ -626,7 +676,78 @@ public class IRBuilder implements ASTVisitor {
             this.current_entity_ = dest_entity;
          */
         if(node.binary_op == BinaryExpressionNode.BINARY_OP.DOT){
-            throw new RuntimeException();
+            //throw new RuntimeException();
+            boolean return_function_call_flag = this.function_call_flag;
+            this.function_call_flag = false;
+            node.left_expression.accept(this); // identifier
+            this.function_call_flag = return_function_call_flag;
+            Type left_type = node.left_expression.type;
+            if(left_type.dimension > 0){
+                if(this.current_function_call != null){
+                    Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                    this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                    this.current_function_call.parameters_.add(tmp_register);
+                }
+                Register return_class = this.current_class_;
+                IRClassType return_class_type = this.current_class_type;
+                GlobalScope return_global_scope = this.global_scope_;
+                Scope return_scope = this.scope_;
+                this.current_class_ = null;
+                this.current_class_type = null;
+                this.global_scope_ = (GlobalScope) this.global_scope_.GetClassScope(node.position, "_array");
+                this.scope_ = this.global_scope_;
+                node.right_expression.accept(this);
+                this.global_scope_ = return_global_scope;
+                this.scope_ = return_scope;
+                this.current_class_ = return_class;
+                this.current_class_type = return_class_type;
+            }
+            else if(left_type.type_ == Type.TYPE.THIS || left_type.type_ == Type.TYPE.CLASS){
+                if(this.current_entity_.assignable_){
+                    Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                    this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                    this.current_class_ = tmp_register;
+                }
+                else this.current_class_ = (Register) this.current_entity_;
+                IRType tmp_IRType = ((IRPointerType) this.current_class_.type_).type_;
+                String tmp_name = ((IRClassType) tmp_IRType).name_;
+                if(this.current_function_call != null && this.function_call_flag){ // function call
+                    this.current_function_call.name_ += " class" + tmp_name + "_";
+                    this.current_function_call.parameters_.add(this.current_class_);
+                    this.have_function_flag = true;
+                }
+                this.current_class_type = new IRClassType(tmp_name);
+                GlobalScope return_global_scope = this.global_scope_;
+                Scope return_scope = this.scope_;
+                Register return_class = this.current_class_;
+                IRClassType return_class_type = this.current_class_type;
+                boolean return_have_function_flag = have_function_flag;
+                this.global_scope_ = (GlobalScope) this.global_scope_.GetClassScope(node.position, tmp_name);
+                this.scope_ = this.global_scope_;
+                node.right_expression.accept(this);
+                this.global_scope_ = return_global_scope;
+                this.scope_ = return_scope;
+                this.current_class_ = return_class;
+                this.current_class_type = return_class_type;
+                this.have_function_flag = return_have_function_flag;
+            }
+            else if(left_type.type_ == Type.TYPE.STRING){
+                if(this.current_function_call != null){ // inn function call
+                    if(this.current_entity_.assignable_){
+                        Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                        this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                        this.current_function_call.parameters_.add(tmp_register);
+                    }
+                    else this.current_function_call.parameters_.add(this.current_entity_);
+                }
+                GlobalScope return_global_scope = this.global_scope_;
+                Scope return_scope = this.scope_;
+                this.global_scope_ = (GlobalScope) this.global_scope_.GetClassScope(node.position, "string");
+                this.scope_ = this.global_scope_;
+                node.right_expression.accept(this);
+                this.global_scope_ = return_global_scope;
+                this.scope_ = return_scope;
+            }
         }
         else if(node.binary_op == BinaryExpressionNode.BINARY_OP.MULTIPLY
                 || node.binary_op == BinaryExpressionNode.BINARY_OP.DIVIDE
@@ -815,7 +936,7 @@ public class IRBuilder implements ASTVisitor {
         }
         else if(node.binary_op == BinaryExpressionNode.BINARY_OP.AND_AND
                 || node.binary_op == BinaryExpressionNode.BINARY_OP.OR_OR){ // bool
-            //
+            throw new RuntimeException();
         }
         else{ // ASSIGN
             node.left_expression.accept(this);
@@ -848,22 +969,104 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(FunctionCallExpressionNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        boolean return_function_call_flag = this.function_call_flag;
+        this.function_call_flag = true;
+        FunctCallStatement return_function_call_stmt = this.current_function_call;
+        ArrayList<IRType> return_parameters = this.current_parameters_;
+        this.current_function_call = new FunctCallStatement();
+        node.identifier.accept(this);
+        this.function_call_flag = return_function_call_flag;
+        node.expression_list.accept(this);
+        if(this.current_function_call.name_.equals("size")){
+            Register tmp_register = (Register) this.current_function_call.parameters_.get(0);
+            Register head_register = new Register(new IRPointerType(new IRIntType(32)), this.current_function_.current_register_id++);
+            Register size_register = new Register(new IRPointerType(new IRIntType(32)), this.current_function_.current_register_id++);
+           this.current_block_.Add(new BitcastStatement(tmp_register, head_register, head_register.type_));
+            GetElementPtr tmp_ptr_stmt = new GetElementPtr(head_register, size_register);
+            tmp_ptr_stmt.values.add(new Constant(new IRIntType(8), -1));
+            this.current_block_.Add(tmp_ptr_stmt);
+            Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
+            this.current_block_.Add(new LoadStatement(return_register.type_, size_register, return_register));
+            this.current_entity_ = return_register;
+        }
+        else{
+            Register return_register = new Register(this.current_function_call.return_type_, this.current_function_.current_register_id++);
+            this.current_function_call.register_ = return_register;
+            this.current_block_.Add(this.current_function_call);
+            this.current_entity_ = return_register;
+        }
+        this.current_function_call = return_function_call_stmt;
+        this.current_parameters_ = return_parameters;
     }
 
     @Override
     public void visit(PrefixExpressionNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        node.expr.accept(this);
+        Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+        this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+        Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
+        if(node.prefix_op == PrefixExpressionNode.PREFIX_OP.SELF_PLUS){
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+        }
+        else{
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+        }
+        this.current_block_.Add(new StoreStatement(tmp_register.type_, return_register, this.current_entity_));
+        this.current_entity_.assignable_ = true;
     }
 
     @Override
     public void visit(PostfixExpressionNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        node.expr.accept(this);
+        Register tmp_register = new Register(((IRPointerType)current_entity_.type_).type_, this.current_function_.current_register_id++);
+        this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+        Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
+        if(node.postfix_op == PostfixExpressionNode.POSTFIX_OP.SELF_PLUS){
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+        }
+        else{
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+        }
+        this.current_block_.Add(new StoreStatement(tmp_register.type_, return_register, this.current_entity_));
+        this.current_entity_ = tmp_register;
     }
 
     @Override
     public void visit(UnaryExpressionNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        node.expr.accept(this);
+        if(this.current_entity_.assignable_){
+            Register tmp_register = new Register(((IRPointerType)this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+            this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+            this.current_entity_ = tmp_register;
+        }
+        if(node.unary_op == UnaryExpressionNode.UNARY_OP.PLUS){
+            Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, new IRIntType(32), new Constant(new IRIntType(32), 0), this.current_entity_, return_register));
+            this.current_entity_ = return_register;
+        }
+        else if(node.unary_op == UnaryExpressionNode.UNARY_OP.MINUS){
+            Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, new IRIntType(32), new Constant(new IRIntType(32), 0), this.current_entity_, return_register));
+            this.current_entity_ = return_register;
+        }
+        else if(node.unary_op == UnaryExpressionNode.UNARY_OP.TILDE){
+            Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.xor, new IRIntType(32), this.current_entity_, new Constant(new IRIntType(32), -1), return_register));
+            this.current_entity_ = return_register;
+        }
+        else if(node.unary_op == UnaryExpressionNode.UNARY_OP.NOT){
+            if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
+            Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.xor, new IRIntType(1), this.current_entity_, new Constant(new IRIntType(1), 1), return_register));
+            this.current_entity_ = return_register;
+        }
+        else{
+            throw new RuntimeException();
+        }
     }
 
     @Override
@@ -879,13 +1082,45 @@ public class IRBuilder implements ASTVisitor {
             throw new RuntimeException();
         }
         else{
-            if(this.is_function_identifier){
-                throw new RuntimeException();
+            if(this.function_call_flag){
+                Type return_type = this.global_scope_.GetFunctionReturnType(node.position, node.ID);
+                if(this.current_class_ != null && this.global_scope_.GetFunctionInClass(node.ID) && !have_function_flag){
+                    this.current_function_call.name_ += " class" + this.current_class_type.name_ + "_";
+                    this.current_function_call.parameters_.add(this.current_class_);
+                }
+                if(return_type.type_ == Type.TYPE.VOID){
+                    this.current_function_call.initial_name_ = node.ID;
+                    this.current_function_call.name_ += node.ID;
+                    this.current_function_call.is_void = true;
+                }
+                else{
+                    IRType return_IRType = TypeConverse(return_type);
+                    this.current_function_call.initial_name_ = node.ID;
+                    this.current_function_call.name_ += node.ID;
+                    this.current_function_call.return_type_ = return_IRType;
+                }
+                ArrayList<Type> tmp_parameters = this.global_scope_.GetFunctionParameters(node.position, this.current_function_call.initial_name_);
+                this.current_parameters_ = new ArrayList<>();
+                for(int i = 0; i < tmp_parameters.size(); i++){
+                    this.current_parameters_.add(TypeConverse(tmp_parameters.get(i)));
+                }
             }
             else{
                 if(this.current_class_ == null) this.current_entity_ = this.scope_.GetEntity(true, node.ID);
                 else{
-                    throw new RuntimeException();
+                    Entity return_entity = scope_.GetEntity(true, node.ID);
+                    if(return_entity == null){
+                        Integer tmp_ID = this.global_scope_.memberIDs_.get(node.ID);
+                        IRType tmp_IRType = TypeConverse(this.scope_.GetType(node.position, true, node.ID));
+                        Register tmp_register = new Register(new IRPointerType(tmp_IRType), this.current_function_.current_register_id++);
+                        GetElementPtr tmp_ptr_stmt = new GetElementPtr(this.current_class_, tmp_register);
+                        tmp_ptr_stmt.values.add(new Constant(new IRIntType(32), 0));
+                        tmp_ptr_stmt.values.add(new Constant(new IRIntType(32), tmp_ID));
+                        this.current_block_.Add(tmp_ptr_stmt);
+                        this.current_entity_ = tmp_register;
+                        this.current_entity_.assignable_ = true;
+                    }
+                    else this.current_entity_ = return_entity;
                 }
             }
         }
