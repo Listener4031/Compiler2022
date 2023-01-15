@@ -210,11 +210,25 @@ public class IRBuilder implements ASTVisitor {
         this.condition_labels_ = new Stack<>();
         this.breakout_labels_ = new Stack<>();
         this.scope_ = this.global_scope_.GetFunctionScope(node.position, node.name);
-        if(is_class_def){
-            throw new RuntimeException();
+        if(this.is_class_def){
+            //throw new RuntimeException();
+            Register tmp_register = new Register(new IRPointerType(this.current_class_type), this.current_function_.current_register_id++);
+            this.current_function_.parameterIDs_.add("_class_pointer");
+            this.current_function_.parameters_.add(tmp_register);
         }
         node.parameter_def.accept(this);
-        for(int i = 0; i < this.current_function_.parameters_.size(); i++){
+        if(this.is_class_def){
+            Register class_register = this.current_function_.parameters_.get(0);
+            Register tmp_register = new Register(new IRPointerType(class_register.type_), this.current_function_.current_register_id++);
+            tmp_register.assignable_ = true;
+            this.current_function_.allocations_.add(new AllocateStatement(tmp_register, class_register.type_));
+            this.current_block_.Add(new StoreStatement(tmp_register.type_, class_register, tmp_register));
+            this.scope_.entities_.put(this.current_function_.parameterIDs_.get(0), tmp_register);
+            Register new_register = new Register(((IRPointerType) tmp_register.type_).type_, this.current_function_.current_register_id++);
+            this.current_block_.Add(new LoadStatement(new_register.type_, tmp_register, new_register));
+            this.current_class_ = new_register;
+        }
+        for(int i = 1; i < this.current_function_.parameters_.size(); i++){
             Register it = this.current_function_.parameters_.get(i);
             IRPointerType new_IRPointerType = new IRPointerType(it.type_);
             Register tmp_register = new Register(new_IRPointerType, this.current_function_.current_register_id++);
@@ -224,9 +238,6 @@ public class IRBuilder implements ASTVisitor {
             StoreStatement new_store = new StoreStatement(tmp_register.type_, it, tmp_register);
             this.current_block_.Add(new_store);
             this.scope_.entities_.put(this.current_function_.parameterIDs_.get(i), tmp_register);
-            if(this.is_class_def){
-                throw new RuntimeException();
-            }
         }
         IRPointerType new_IRPointerType = new IRPointerType(this.current_function_.return_type_);
         Register return_register = new Register(new_IRPointerType, this.current_function_.current_register_id++);
