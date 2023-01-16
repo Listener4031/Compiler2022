@@ -810,7 +810,17 @@ public class IRBuilder implements ASTVisitor {
                 this.current_entity_ = dest_entity;
             }
             else{ // string
-                throw new RuntimeException();
+                //throw new RuntimeException();
+                TypeConverse((Register) left_entity, new IRPointerType(new IRIntType(8)));
+                Register left_register = (Register) this.current_entity_;
+                TypeConverse((Register) right_entity, new IRPointerType(new IRIntType(8)));
+                Register right_register = (Register) this.current_entity_;
+                Register tmp_register = new Register(new IRPointerType(new IRIntType(8)), this.current_function_.current_register_id++);
+                FunctCallStatement new_function_call = new FunctCallStatement("string_add", tmp_register.type_, tmp_register);
+                new_function_call.parameters_.add(left_register);
+                new_function_call.parameters_.add(right_register);
+                this.current_block_.Add(new_function_call);
+                this.current_entity_ =tmp_register;
             }
         }
         else if(node.binary_op == BinaryExpressionNode.BINARY_OP.MINUS){ // int
@@ -886,8 +896,38 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new_stmt);
                 this.current_entity_ = dest_entity;
             }
-            else{
-                throw new RuntimeException();
+            else{ // both string
+                //throw new RuntimeException();
+                TypeConverse((Register) left_entity, new IRPointerType(new IRIntType(8)));
+                Register left_register = (Register) this.current_entity_;
+                TypeConverse((Register) right_entity, new IRPointerType(new IRIntType(8)));
+                Register right_register = (Register) this.current_entity_;
+                Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
+                if(node.binary_op == BinaryExpressionNode.BINARY_OP.LESS){
+                    FunctCallStatement new_function_call = new FunctCallStatement("string_less", return_register.type_, return_register);
+                    new_function_call.parameters_.add(left_register);
+                    new_function_call.parameters_.add(right_register);
+                    this.current_block_.Add(new_function_call);
+                }
+                else if(node.binary_op == BinaryExpressionNode.BINARY_OP.LESS_EQUAL){
+                    FunctCallStatement new_function_call = new FunctCallStatement("string_less", return_register.type_, return_register);
+                    new_function_call.parameters_.add(left_register);
+                    new_function_call.parameters_.add(right_register);
+                    this.current_block_.Add(new_function_call);
+                }
+                else if(node.binary_op == BinaryExpressionNode.BINARY_OP.GREATER){
+                    FunctCallStatement new_function_call = new FunctCallStatement("string_less", return_register.type_, return_register);
+                    new_function_call.parameters_.add(left_register);
+                    new_function_call.parameters_.add(right_register);
+                    this.current_block_.Add(new_function_call);
+                }
+                else{
+                    FunctCallStatement new_function_call = new FunctCallStatement("string_less", return_register.type_, return_register);
+                    new_function_call.parameters_.add(left_register);
+                    new_function_call.parameters_.add(right_register);
+                    this.current_block_.Add(new_function_call);
+                }
+                this.current_entity_ = return_register;
             }
         }
         else if(node.binary_op == BinaryExpressionNode.BINARY_OP.EQUAL
@@ -910,14 +950,37 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new LoadStatement(right_entity.type_, this.current_entity_, right_entity));
             }
             if(left_Type.type_ == Type.TYPE.NULL || right_Type.type_ == Type.TYPE.NULL){
-                throw new RuntimeException();
+                Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
+                IRType tmp_IRType = (left_Type.type_ == Type.TYPE.NULL) ? right_entity.type_ : left_entity.type_;
+                this.current_block_.Add(new BinaryStatement(cur_op, tmp_IRType, left_entity, right_entity, return_register));
+                this.current_entity_ = return_register;
             }
             else{
-                IRIntType fixed_bool_IRType = new IRIntType(1);
-                Register dest_entity = new Register(fixed_bool_IRType, this.current_function_.current_register_id++);
-                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_bool_IRType, left_entity, right_entity, dest_entity);
-                this.current_block_.Add(new_stmt);
-                this.current_entity_ = dest_entity;
+                if(left_Type.type_ == Type.TYPE.STRING){
+                    TypeConverse((Register) left_entity, new IRPointerType(new IRIntType(8)));
+                    Register left_register = (Register) this.current_entity_;
+                    TypeConverse((Register) right_entity, new IRPointerType(new IRIntType(8)));
+                    Register right_register = (Register) this.current_entity_;
+                    Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
+                    if(node.binary_op == BinaryExpressionNode.BINARY_OP.EQUAL){
+                        FunctCallStatement new_function_call = new FunctCallStatement("string_equal", return_register.type_, return_register);
+                        new_function_call.parameters_.add(left_register);
+                        new_function_call.parameters_.add(right_register);
+                        this.current_block_.Add(new_function_call);
+                    }
+                    else{
+                        FunctCallStatement new_function_call = new FunctCallStatement("string_not_equal", return_register.type_, return_register);
+                        new_function_call.parameters_.add(left_register);
+                        new_function_call.parameters_.add(right_register);
+                        this.current_block_.Add(new_function_call);
+                    }
+                    this.current_entity_ = return_register;
+                }
+                else{
+                    Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
+                    this.current_block_.Add(new BinaryStatement(cur_op, left_entity.type_, left_entity, right_entity, return_register));
+                    this.current_entity_ = return_register;
+                }
             }
         }
         else if(node.binary_op == BinaryExpressionNode.BINARY_OP.AND
@@ -947,7 +1010,83 @@ public class IRBuilder implements ASTVisitor {
         }
         else if(node.binary_op == BinaryExpressionNode.BINARY_OP.AND_AND
                 || node.binary_op == BinaryExpressionNode.BINARY_OP.OR_OR){ // bool
-            throw new RuntimeException();
+            //throw new RuntimeException();
+            if(node.binary_op == BinaryExpressionNode.BINARY_OP.AND_AND){
+                node.left_expression.accept(this);
+                if(this.current_entity_.assignable_){
+                    Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                    this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                    this.current_entity_ = tmp_register;
+                }
+                Label current_label = new Label(this.current_block_.identifier_);
+                Label true_label = new Label(this.current_function_.identifier_ + " true (&&)");
+                Block true_block = new Block(this.current_function_.identifier_ + " true (&&)");
+                Label return_label = new Label(this.current_function_.identifier_ + " return (&&)");
+                Block return_block = new Block(this.current_function_.identifier_ + " return (&&)");
+                if(this.current_entity_ instanceof Constant){
+                    if(((Constant) this.current_entity_).value_ == 1) this.current_block_.Add(new BranchStatement(true_label));
+                    else this.current_block_.Add(new BranchStatement(return_label));
+                }
+                else{
+                    TypeConverse((Register) this.current_entity_, new IRIntType(1));
+                    this.current_block_.Add(new BranchStatement(this.current_entity_, true_label, return_label));
+                }
+                this.current_block_ = true_block;
+                node.right_expression.accept(this);
+                if(this.current_entity_.assignable_){
+                    Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                    this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                    this.current_entity_ = tmp_register;
+                }
+                if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
+                this.current_block_.Add(new BranchStatement(return_label));
+                this.current_block_ = return_block;
+                Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
+                PhiStatement new_phi = new PhiStatement(return_register, new IRIntType(1));
+                new_phi.labels_.add(current_label);
+                new_phi.values_.add(new Constant(new IRIntType(1), 0));
+                new_phi.labels_.add(true_label);
+                new_phi.values_.add(this.current_entity_);
+                this.current_block_.Add(new_phi);
+                this.current_function_.blocks_.add(true_block);
+                this.current_function_.blocks_.add(return_block);
+                this.current_entity_ = return_register;
+            }
+            else{
+                node.left_expression.accept(this);
+                if(this.current_entity_.assignable_){
+                    Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                    this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                    this.current_entity_ = tmp_register;
+                }
+                Label current_label = new Label(this.current_block_.identifier_);
+                Label return_label = new Label(this.current_function_.identifier_ + " return (||)");
+                Block return_block = new Block(this.current_function_.identifier_ + " return (||)");
+                Label false_label = new Label(this.current_function_.identifier_ + " false (||)");
+                Block false_block = new Block(this.current_function_.identifier_ + " false (||)");
+                if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
+                this.current_block_.Add(new BranchStatement(this.current_entity_, return_label, false_label));
+                this.current_block_ = false_block;
+                node.right_expression.accept(this);
+                if(this.current_entity_.assignable_){
+                    Register tmp_register = new Register(((IRPointerType) this.current_entity_.type_).type_, this.current_function_.current_register_id++);
+                    this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
+                    this.current_entity_ = tmp_register;
+                }
+                if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
+                this.current_block_.Add(new BranchStatement(return_label));
+                this.current_block_ = return_block;
+                Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
+                PhiStatement new_phi = new PhiStatement(return_register, new IRIntType(1));
+                new_phi.labels_.add(current_label);
+                new_phi.values_.add(new Constant(new IRIntType(1), 1));
+                new_phi.labels_.add(false_label);
+                new_phi.values_.add(this.current_entity_);
+                this.current_block_.Add(new_phi);
+                this.current_function_.blocks_.add(false_block);
+                this.current_function_.blocks_.add(return_block);
+                this.current_entity_ = return_register;
+            }
         }
         else{ // ASSIGN
             node.left_expression.accept(this);
