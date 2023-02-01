@@ -1,9 +1,17 @@
-int a = 21;
-int b = 32 + a;
-bool c = true;
-bool d = (b > a);
+int g1 = 1;
+bool g2 = false;
+
+bool func1(int x, int y){
+    if(x + y > 20) return true;
+    else{
+        if(x >= y) return false;
+        else return true;
+    }
+}
 
 int main(){
-    return 1;
+    int x1 = 1;
+    bool x2 = true;
+    return 0;
 }
 

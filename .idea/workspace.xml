@@ -6,7 +6,18 @@
   <component name="ChangeListManager">
     <list default="true" id="9347c0ff-7e32-4528-a792-2599d8708371" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llvm_test.ll" beforeDir="false" afterPath="$PROJECT_DIR$/llvm_test.ll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Compiler2022/backend/IRBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Compiler2022/backend/IRBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assembly/ASMBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assembly/ASMBlock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assembly/ASMFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assembly/ASMFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assembly/inst/Inst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assembly/inst/Inst.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assembly/inst/InstBinary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assembly/inst/InstBinary.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/IR/GetElementPtr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IR/GetElementPtr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/backend/ASMBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/backend/ASMBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/backend/IRBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/backend/IRBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/basic/IRtypes/IRClassType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/basic/IRtypes/IRClassType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.mx" beforeDir="false" afterPath="$PROJECT_DIR$/test.mx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,24 +96,24 @@
           <option name="timeStamp" value="226" />
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main.java</url>
-          <line>37</line>
-          <option name="timeStamp" value="238" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>618</line>
+          <line>627</line>
           <option name="timeStamp" value="283" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>1231</line>
-          <option name="timeStamp" value="335" />
+          <line>1228</line>
+          <option name="timeStamp" value="336" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/backend/IRBuilder.java</url>
-          <line>1217</line>
-          <option name="timeStamp" value="336" />
+          <url>file://$PROJECT_DIR$/src/basic/Scope.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="341" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/basic/Scope.java</url>
+          <line>50</line>
+          <option name="timeStamp" value="342" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

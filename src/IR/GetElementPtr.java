@@ -17,7 +17,7 @@ public class GetElementPtr extends Statement{
 
     @Override
     public String toString(){
-        String ans = reg_to_ + " = get element pointer " + ((IRPointerType) reg_from_.type_).type_;
+        String ans = reg_to_ + " = getelementptr inbounds " + ((IRPointerType) reg_from_.type_).type_;
         ans += ", " + reg_from_.type_ + " " + reg_from_ + ", ";
         for(int i = 0; i <= this.values.size() - 2; i++){
             ans += this.values.get(i).type_ + " " + this.values.get(i) + ", ";

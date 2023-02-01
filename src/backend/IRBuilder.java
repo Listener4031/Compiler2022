@@ -228,6 +228,14 @@ public class IRBuilder implements ASTVisitor {
             this.current_block_.Add(new LoadStatement(new_register.type_, tmp_register, new_register));
             this.current_class_ = new_register;
         }
+        else if(!this.current_function_.parameters_.isEmpty()){
+            Register class_register = this.current_function_.parameters_.get(0);
+            Register tmp_register = new Register(new IRPointerType(class_register.type_), this.current_function_.current_register_id++);
+            tmp_register.assignable_ = true;
+            this.current_function_.allocations_.add(new AllocateStatement(tmp_register, class_register.type_));
+            this.current_block_.Add(new StoreStatement(tmp_register.type_, class_register, tmp_register));
+            this.scope_.entities_.put(this.current_function_.parameterIDs_.get(0), tmp_register);
+        }
         for(int i = 1; i < this.current_function_.parameters_.size(); i++){
             Register it = this.current_function_.parameters_.get(i);
             IRPointerType new_IRPointerType = new IRPointerType(it.type_);
@@ -611,6 +619,7 @@ public class IRBuilder implements ASTVisitor {
         for(AllocateStatement it : this.current_function_.allocations_){
             this.current_block_.Add(it);
         }
+        current_block_.Add(new BranchStatement(new Label(current_function_.entry_block.identifier_)));
         this.global_definition_.functions_.add(class_constructor);
     }
 
@@ -796,7 +805,6 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new LoadStatement(left_entity.type_, this.current_entity_, left_entity));
             }
             node.right_expression.accept(this);
-            Type right_Type = node.right_expression.type;
             Entity right_entity = this.current_entity_;
             if(right_entity.assignable_){
                 right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
@@ -883,7 +891,6 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new LoadStatement(left_entity.type_, this.current_entity_, left_entity));
             }
             node.right_expression.accept(this);
-            Type right_Type = node.right_expression.type;
             Entity right_entity = this.current_entity_;
             if(right_entity.assignable_){
                 right_entity = new Register(((IRPointerType) right_entity.type_).type_, this.current_function_.current_register_id++);
@@ -1019,10 +1026,12 @@ public class IRBuilder implements ASTVisitor {
                     this.current_entity_ = tmp_register;
                 }
                 Label current_label = new Label(this.current_block_.identifier_);
-                Label true_label = new Label(this.current_function_.identifier_ + " true (&&)");
-                Block true_block = new Block(this.current_function_.identifier_ + " true (&&)");
-                Label return_label = new Label(this.current_function_.identifier_ + " return (&&)");
-                Block return_block = new Block(this.current_function_.identifier_ + " return (&&)");
+                String tmp_str1 = this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + " true (&&)";
+                Label true_label = new Label(tmp_str1);
+                Block true_block = new Block(tmp_str1);
+                String tmp_str2 = this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + " return (&&)";
+                Label return_label = new Label(tmp_str2);
+                Block return_block = new Block(tmp_str2);
                 if(this.current_entity_ instanceof Constant){
                     if(((Constant) this.current_entity_).value_ == 1) this.current_block_.Add(new BranchStatement(true_label));
                     else this.current_block_.Add(new BranchStatement(return_label));
@@ -1060,10 +1069,12 @@ public class IRBuilder implements ASTVisitor {
                     this.current_entity_ = tmp_register;
                 }
                 Label current_label = new Label(this.current_block_.identifier_);
-                Label return_label = new Label(this.current_function_.identifier_ + " return (||)");
-                Block return_block = new Block(this.current_function_.identifier_ + " return (||)");
-                Label false_label = new Label(this.current_function_.identifier_ + " false (||)");
-                Block false_block = new Block(this.current_function_.identifier_ + " false (||)");
+                String tmp_str1 = this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + " return (||)";
+                Label return_label = new Label(tmp_str1);
+                Block return_block = new Block(tmp_str1);
+                String tmp_str2 = this.current_function_.identifier_ + "_" + (this.current_function_.current_register_id - 1) + " false (&&)";
+                Label false_label = new Label(tmp_str2);
+                Block false_block = new Block(tmp_str2);
                 if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
                 this.current_block_.Add(new BranchStatement(this.current_entity_, return_label, false_label));
                 this.current_block_ = false_block;
@@ -1229,7 +1240,10 @@ public class IRBuilder implements ASTVisitor {
             else this.current_entity_ = new Constant(new IRIntType(8), 0);
         }
         else if(node.atom_expr == AtomExpressionNode.ATOM_EXPR.STRING_OBJECT){
-            throw new RuntimeException();
+            //throw new RuntimeException();
+            GlobalStringDefStmt new_stmt = new GlobalStringDefStmt(node.ID);
+            global_definition_.global_def_statements.add(new_stmt);
+            current_entity_ = new_stmt.register_;
         }
         else{
             if(this.function_call_flag){

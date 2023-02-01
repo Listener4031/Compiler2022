@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class IRClassType extends IRType{
     public String name_;
-    public ArrayList<IRType> types_;
+    public ArrayList<IRType> types_; // class A{int x, bool y};
 
     public IRClassType(String _name){
         super();

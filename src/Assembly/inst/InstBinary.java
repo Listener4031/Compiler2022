@@ -15,7 +15,7 @@ import Assembly.operand.Reg;
 `define AND     6'd28
  */
 public class InstBinary extends Inst{
-    public enum BINARY_INST_OP{add, sub, sll, slt, sltu, xor, srl, sra, or, and}
+    public enum BINARY_INST_OP{add, sub, sll, slt, sltu, xor, srl, sra, or, and, mul, div, rem}
 
     public BINARY_INST_OP op_;
 
