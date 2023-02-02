@@ -9,6 +9,7 @@ import basic.Scope;
 import basic.types.Type;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Stack;
 
 public class IRBuilder implements ASTVisitor {
@@ -625,7 +626,120 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(NewVariableNode node){
-        throw new RuntimeException();
+        //throw new RuntimeException();
+        Type tmp_type = node.type;
+        IRType tmp_IRType = TypeConverse(tmp_type);
+        int tmp_IRType_size = tmp_IRType.size_;
+        if(node.new_sizes.isEmpty()){
+            tmp_IRType = ((IRPointerType) tmp_IRType).type_;
+            tmp_IRType.size_ = tmp_IRType_size;
+            Register malloc_register = new Register(new IRPointerType(new IRIntType(8)), current_function_.current_register_id++);
+            FunctCallStatement tmp_function_call = new FunctCallStatement("malloc", malloc_register.type_, malloc_register);
+            tmp_function_call.parameters_.add(new Constant(new IRIntType(64), tmp_IRType.size_));
+            current_block_.Add(tmp_function_call);
+            Register return_register = new Register(new IRPointerType(tmp_IRType), current_function_.current_register_id++);
+            current_block_.Add(new BitcastStatement(malloc_register, return_register, return_register.type_));
+            FunctCallStatement tmp_function_call1 = new FunctCallStatement(node.type_.ID);
+            tmp_function_call1.parameters_.add(return_register);
+            current_block_.Add(tmp_function_call1);
+            current_entity_ = return_register;
+        }
+        else{
+            ArrayList<Entity> new_entities = new ArrayList<>();
+            node.new_sizes.forEach(it -> {
+                if(it.expression_ == null) return;
+                it.expression_.accept(this);
+                if(current_entity_.assignable_){
+                    Register tmp_register = new Register(((IRPointerType) current_entity_.type_).type_, current_function_.current_register_id++);
+                    current_block_.Add(new LoadStatement(tmp_register.type_, current_entity_, tmp_register));
+                    current_entity_ = tmp_register;
+                }
+                new_entities.add(current_entity_);
+            });
+            Type base_type = new Type(tmp_type);
+            base_type.dimension = 0;
+            IRType base_IRType = TypeConverse(base_type);
+            for(int i = new_entities.size(); i < node.new_sizes.size(); i++){
+                base_IRType = new IRPointerType(base_IRType);
+            }
+            current_entity_ = MallocArray(new_entities, 0, base_IRType);
+        }
+    }
+
+    public Entity MallocArray(ArrayList<Entity> new_entities, int _cnt, IRType _type){
+        int dimension = new_entities.size() - _cnt;
+        IRType tmp_IRType = _type;
+        for(int i = 0; i < dimension; i++) tmp_IRType = new IRPointerType(tmp_IRType);
+        Entity array_size_entity = new_entities.get(_cnt);
+        Entity array_size_reg = array_size_entity;
+        if(!(array_size_entity instanceof Constant)){
+            array_size_reg = new Register(new IRIntType(64), current_function_.current_register_id++);
+            current_block_.Add(new ZextStatement((Register) array_size_entity, (Register) array_size_reg, array_size_entity.type_, array_size_reg.type_));
+        }
+        int tmp_size = ((IRPointerType) tmp_IRType).type_.size_;
+        Register malloc_size = new Register(new IRIntType(64), current_function_.current_register_id++);
+        current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.mul, malloc_size.type_, malloc_size, array_size_reg, new Constant(new IRIntType(64), tmp_size)));
+        Register malloc_size_plus4 = new Register(new IRIntType(64), current_function_.current_register_id++);
+        current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, malloc_size_plus4.type_, malloc_size_plus4, malloc_size, new Constant(new IRIntType(64), 4)));
+        Register malloc_ptr = new Register(new IRPointerType(new IRIntType(8)), current_function_.current_register_id++);
+        FunctCallStatement tmp_function_call = new FunctCallStatement("malloc", malloc_ptr.type_, malloc_ptr);
+        tmp_function_call.parameters_.add(malloc_size_plus4);
+        current_block_.Add(tmp_function_call);
+        Register malloc_ptr32 = new Register(new IRPointerType(new IRIntType(32)), current_function_.current_register_id++);
+        current_block_.Add(new BitcastStatement(malloc_ptr, malloc_ptr32, malloc_ptr32.type_));
+        current_block_.Add(new StoreStatement(array_size_entity.type_, array_size_entity, malloc_ptr32));
+        Register array_head_ptr = new Register(malloc_ptr32.type_, current_function_.current_register_id++);
+        GetElementPtr offset = new GetElementPtr(malloc_ptr32, array_head_ptr);
+        offset.values.add(new Constant(new IRIntType(32), 1));
+        current_block_.Add(offset);
+        Register tmp_array_ptr = new Register(tmp_IRType, current_function_.current_register_id++);
+        current_block_.Add(new BitcastStatement(array_head_ptr, tmp_array_ptr, tmp_array_ptr.type_));
+        if(dimension == 1) return tmp_array_ptr;
+        Register loop_reg = new Register(new IRPointerType(new IRIntType(32)), current_function_.current_register_id++);
+        current_function_.allocations_.add(new AllocateStatement(loop_reg, new IRIntType(32)));
+        current_block_.Add(new StoreStatement(new IRIntType(32), new Constant(new IRIntType(32), 0), loop_reg));
+        Label condition_label = new Label(current_function_.identifier_ + "_ID" + (current_function_.current_register_id - 1) + "_for_condition");
+        Block condition_block = new Block(condition_label.identifier_);
+        Label suite_label = new Label(current_function_.identifier_ + "_ID" + (current_function_.current_register_id - 1) + "_for_suite");
+        Block suite_block = new Block(suite_label.identifier_);
+        Label stepping_label = new Label(current_function_.identifier_ + "_ID" + (current_function_.current_register_id - 1) + "_for_stepping");
+        Block stepping_block = new Block(stepping_label.identifier_);
+        Label out_label = new Label(current_function_.identifier_ + "_ID" + (current_function_.current_register_id - 1) + "_for_out");
+        Block out_block = new Block(out_label.identifier_);
+        current_block_.Add(new BranchStatement(condition_label));
+        current_function_.blocks_.add(condition_block);
+        // condition block
+        current_block_ = condition_block;
+        Register loop_value = new Register(new IRIntType(32), current_function_.current_register_id++);
+        current_block_.Add(new LoadStatement(loop_value.type_, loop_reg, loop_value));
+        Entity tmp_entity = new_entities.get(_cnt);
+        Register tmp_register = new Register(new IRIntType(1), current_function_.current_register_id++);
+        current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.slt, loop_value.type_, tmp_register, loop_value, tmp_entity));
+        current_block_.Add(new BranchStatement(tmp_register, suite_label, out_label));
+        current_function_.blocks_.add(suite_block);
+        // suite block
+        current_block_ = suite_block;
+        loop_value = new Register(new IRIntType(32), current_function_.current_register_id++);
+        current_block_.Add(new LoadStatement(loop_value.type_, loop_reg, loop_value));
+        Register next_ptr = new Register(tmp_IRType, current_function_.current_register_id++);
+        GetElementPtr get_ptr = new GetElementPtr(tmp_array_ptr, next_ptr);
+        get_ptr.values.add(loop_value);
+        current_block_.Add(get_ptr);
+        Entity next_array = MallocArray(new_entities, _cnt + 1, _type);
+        current_block_.Add(new StoreStatement(next_array.type_, next_array, next_ptr));
+        current_block_.Add(new BranchStatement(stepping_label));
+        current_function_.blocks_.add(stepping_block);
+        // stepping block
+        current_block_ = stepping_block;
+        loop_value = new Register(new IRIntType(32), current_function_.current_register_id++);
+        current_block_.Add(new LoadStatement(loop_value.type_, loop_reg, loop_value));
+        Register next_loop_value = new Register(new IRIntType(32), current_function_.current_register_id++);
+        current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, loop_value.type_, next_loop_value, loop_value, new Constant(new IRIntType(32), 1)));
+        current_block_.Add(new StoreStatement(loop_reg.type_, next_loop_value, loop_reg));
+        current_block_.Add(new BranchStatement(condition_label));
+        current_function_.blocks_.add(out_block);
+        current_block_ = out_block;
+        return tmp_array_ptr;
     }
 
     @Override
@@ -790,7 +904,7 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
             }
             Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
-            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, dest_entity, left_entity, right_entity);
             this.current_block_.Add(new_stmt);
             this.current_entity_ = dest_entity;
         }
@@ -813,7 +927,7 @@ public class IRBuilder implements ASTVisitor {
             if(left_Type.type_ == Type.TYPE.INT){
                 IRIntType fixed_int_IRType = new IRIntType(32);
                 Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
-                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, dest_entity, left_entity, right_entity);
                 this.current_block_.Add(new_stmt);
                 this.current_entity_ = dest_entity;
             }
@@ -847,7 +961,7 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
             }
             Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
-            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, dest_entity, left_entity, right_entity);
             this.current_block_.Add(new_stmt);
             this.current_entity_ = dest_entity;
         }
@@ -870,7 +984,7 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
             }
             Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
-            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, dest_entity, left_entity, right_entity);
             this.current_block_.Add(new_stmt);
             this.current_entity_ = dest_entity;
         }
@@ -899,7 +1013,7 @@ public class IRBuilder implements ASTVisitor {
             if(left_Type.type_ == Type.TYPE.INT){
                 IRIntType fixed_bool_IRType = new IRIntType(1);
                 Register dest_entity = new Register(fixed_bool_IRType, this.current_function_.current_register_id++);
-                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_bool_IRType, left_entity, right_entity, dest_entity);
+                BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_bool_IRType, dest_entity, left_entity, right_entity);
                 this.current_block_.Add(new_stmt);
                 this.current_entity_ = dest_entity;
             }
@@ -959,7 +1073,7 @@ public class IRBuilder implements ASTVisitor {
             if(left_Type.type_ == Type.TYPE.NULL || right_Type.type_ == Type.TYPE.NULL){
                 Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
                 IRType tmp_IRType = (left_Type.type_ == Type.TYPE.NULL) ? right_entity.type_ : left_entity.type_;
-                this.current_block_.Add(new BinaryStatement(cur_op, tmp_IRType, left_entity, right_entity, return_register));
+                this.current_block_.Add(new BinaryStatement(cur_op, tmp_IRType, return_register, left_entity, right_entity));
                 this.current_entity_ = return_register;
             }
             else{
@@ -985,7 +1099,7 @@ public class IRBuilder implements ASTVisitor {
                 }
                 else{
                     Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
-                    this.current_block_.Add(new BinaryStatement(cur_op, left_entity.type_, left_entity, right_entity, return_register));
+                    this.current_block_.Add(new BinaryStatement(cur_op, left_entity.type_, return_register, left_entity, right_entity));
                     this.current_entity_ = return_register;
                 }
             }
@@ -1011,7 +1125,7 @@ public class IRBuilder implements ASTVisitor {
                 this.current_block_.Add(new LoadStatement(fixed_int_IRType, this.current_entity_, right_entity));
             }
             Register dest_entity = new Register(fixed_int_IRType, this.current_function_.current_register_id++);
-            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, left_entity, right_entity, dest_entity);
+            BinaryStatement new_stmt = new BinaryStatement(cur_op, fixed_int_IRType, dest_entity, left_entity, right_entity);
             this.current_block_.Add(new_stmt);
             this.current_entity_ = dest_entity;
         }
@@ -1169,10 +1283,10 @@ public class IRBuilder implements ASTVisitor {
         this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
         Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
         if(node.prefix_op == PrefixExpressionNode.PREFIX_OP.SELF_PLUS){
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, tmp_register.type_, return_register, tmp_register, new Constant(new IRIntType(32), 1)));
         }
         else{
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, tmp_register.type_, return_register, tmp_register, new Constant(new IRIntType(32), 1)));
         }
         this.current_block_.Add(new StoreStatement(tmp_register.type_, return_register, this.current_entity_));
         this.current_entity_.assignable_ = true;
@@ -1186,10 +1300,10 @@ public class IRBuilder implements ASTVisitor {
         this.current_block_.Add(new LoadStatement(tmp_register.type_, this.current_entity_, tmp_register));
         Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
         if(node.postfix_op == PostfixExpressionNode.POSTFIX_OP.SELF_PLUS){
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, tmp_register.type_, return_register, tmp_register, new Constant(new IRIntType(32), 1)));
         }
         else{
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, tmp_register.type_, tmp_register, new Constant(new IRIntType(32), 1), return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, tmp_register.type_, return_register, tmp_register, new Constant(new IRIntType(32), 1)));
         }
         this.current_block_.Add(new StoreStatement(tmp_register.type_, return_register, this.current_entity_));
         this.current_entity_ = tmp_register;
@@ -1206,23 +1320,23 @@ public class IRBuilder implements ASTVisitor {
         }
         if(node.unary_op == UnaryExpressionNode.UNARY_OP.PLUS){
             Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, new IRIntType(32), new Constant(new IRIntType(32), 0), this.current_entity_, return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.add, new IRIntType(32), return_register, new Constant(new IRIntType(32), 0), this.current_entity_));
             this.current_entity_ = return_register;
         }
         else if(node.unary_op == UnaryExpressionNode.UNARY_OP.MINUS){
             Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, new IRIntType(32), new Constant(new IRIntType(32), 0), this.current_entity_, return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.sub, new IRIntType(32), return_register, new Constant(new IRIntType(32), 0), this.current_entity_));
             this.current_entity_ = return_register;
         }
         else if(node.unary_op == UnaryExpressionNode.UNARY_OP.TILDE){
             Register return_register = new Register(new IRIntType(32), this.current_function_.current_register_id++);
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.xor, new IRIntType(32), this.current_entity_, new Constant(new IRIntType(32), -1), return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.xor, new IRIntType(32), return_register, this.current_entity_, new Constant(new IRIntType(32), -1)));
             this.current_entity_ = return_register;
         }
         else if(node.unary_op == UnaryExpressionNode.UNARY_OP.NOT){
             if(this.current_entity_ instanceof Register) TypeConverse((Register) this.current_entity_, new IRIntType(1));
             Register return_register = new Register(new IRIntType(1), this.current_function_.current_register_id++);
-            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.xor, new IRIntType(1), this.current_entity_, new Constant(new IRIntType(1), 1), return_register));
+            this.current_block_.Add(new BinaryStatement(BinaryStatement.IR_BINARY_OP.xor, new IRIntType(1), return_register, this.current_entity_, new Constant(new IRIntType(1), 1)));
             this.current_entity_ = return_register;
         }
         else{
